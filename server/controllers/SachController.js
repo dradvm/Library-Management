@@ -1,0 +1,139 @@
+const sachModel = require("../models/SachModel")
+const { uploadImageToFirebase, deleteImageFromFirebase, getSignedUrl } = require("../utils/firebase")
+const randomstring = require("randomstring")
+
+const getNewUrlSign = async (sach) => {
+    const date = new Date()
+    date.setDate(date.getDate() + 1)
+    if (date >= sach.hinhAnhHetHan) {
+        getSignedUrl(sach.duongDanHinhAnh)
+            .then((data) => {
+                return sachModel.findByIdAndUpdate(sach._id, data)
+            })
+            .then((data) => console.log("Update!"))
+            .catch((err) => res.status(500).json({ message: err.message }))
+    }
+
+}
+const getNewUrlSignForAllSach = async (sachs) => {
+    sachs.forEach((sach) => {
+        getNewUrlSign(sach)
+    })
+
+}
+
+const sachController = {
+    getAllSach: async (req, res) => {
+        sachModel.find({})
+            .then((data) => getNewUrlSignForAllSach(data))
+            .then((data) => sachModel.find({}))
+            .then((data) => res.status(200).json(data))
+            .catch((err) => {
+                console.log(err)
+                res.status(500).json({ message: err.message })
+            })
+    },
+    getSachById: async (req, res) => {
+        sachModel.findById(req.params.id)
+            .then((data) => res.status(200).json(data))
+            .catch((err) => res.status(500).json({ message: err.message }))
+    },
+    getSachByMaSach: async (req, res) => {
+        sachModel.findOne({
+            maSach: req.params.maSach
+        })
+            .then((data) => res.status(200).json(data))
+            .catch((err) => res.status(500).json({ message: err.message }))
+    },
+    getSachByTenSach: async (req, res) => {
+        sachModel.findOne({
+            tenSach: req.query.tenSach
+        })
+            .then((data) => res.status(200).json(data))
+            .catch((err) => res.status(500).json({ message: err.message }))
+    },
+    createSach: async (req, res) => {
+        if (req.file) {
+            const filePath = `Sach/${Date.now()}-${req.file.originalname}`
+            uploadImageToFirebase(req.file, filePath)
+                .then((data) => {
+                    const sach = {
+                        ...req.body,
+                        ...data,
+                        duongDanHinhAnh: filePath,
+                    }
+                    sachModel.create(sach)
+                        .then((data) => res.status(200).json({ message: "Tạo sách mới thành công!" }))
+                        .catch((err) => {
+                            deleteImageFromFirebase(filePath)
+                                .then((data) => res.status(500).json({ message: err.message }))
+                                .catch((err) => res.status(500).json({ message: err.message }))
+                        })
+                })
+                .catch((err) => res.status(500).json({ message: err.message }))
+        }
+        else {
+            res.status(500).json({ message: "Không có file" })
+        }
+    },
+    updateSach: async (req, res) => {
+        if (req.file) {
+            const filePath = `Sach/${Date.now()}-${req.file.originalname}`
+            sachModel.findById(req.params.id)
+                .then((data) => deleteImageFromFirebase(data.duongDanHinhAnh))
+                .then((data) => { })
+                .catch((err) => {
+                    console.log("A")
+                    console.log(err)
+                    res.status(500).json({ message: err.message })
+                })
+            uploadImageToFirebase(req.file, filePath)
+                .then((data) => {
+                    const sach = {
+                        ...req.body,
+                        ...data,
+                        duongDanHinhAnh: filePath,
+                    }
+                    sachModel.findByIdAndUpdate(req.params.id, sach)
+                        .then((data) => res.status(200).json({ message: "Cập nhật sách thành công!" }))
+                        .catch((err) => {
+                            deleteImageFromFirebase(filePath)
+                                .then((data) => res.status(500).json({ message: err.message }))
+                                .catch((err) => res.status(500).json({ message: err.message }))
+                        })
+                })
+                .catch((err) => {
+                    console.log("B")
+                    console.log(err)
+                    res.status(500).json({ message: err.message })
+                })
+        }
+        else {
+            sachModel.findByIdAndUpdate(req.params.id, req.body)
+                .then((data) => res.status(200).json({ message: "Cập nhật sách thành công" }))
+                .catch((err) => res.status(500).json({ message: err.message }))
+        }
+    },
+    deleteSach: async (req, res) => {
+        sachModel.findByIdAndDelete(req.params.id)
+            .then((data) => res.status(200).json({ message: "Xóa sách thành công!" }))
+            .catch((err) => res.status(500).json({ message: err.message }))
+    },
+    getNewMaSach: async (req, res) => {
+        var newMaSach = null
+        while (!newMaSach) {
+            var maSach = randomstring.generate({
+                charset: "alphanumeric",
+                length: 8
+            })
+            var check = await sachModel.findOne({ maSach: maSach })
+            if (!check) {
+                newMaSach = maSach
+            }
+        }
+        res.json(newMaSach.toUpperCase())
+    },
+
+}
+
+module.exports = sachController
