@@ -1,8 +1,7 @@
 <template>
   <div class="fixed flex h-100 w-100">
-    <div class="w-20 bg-slate-900">
-      <div class="flex flex-column items-center text-white px-3 py-3">
-        <RouterLink to="">
+    <div class="bg-slate-900 flex flex-column items-center text-white px-3 py-3 min-w-20">
+      <RouterLink to="">
           <font-awesome-icon
             :icon="['fas', 'book-open']"
             class="text-3xl text-blue-600"
@@ -53,7 +52,6 @@
             />
           </RouterLink>
         </div>
-      </div>
     </div>
     <RouterView></RouterView>
   </div>

@@ -185,8 +185,20 @@
       </div>
       <div class="py-8">
         <MyButton size="medium" @click="submitForm">
-          <font-awesome-icon :icon="['fas', 'book']" />
-          <div class="ml-2 text-base">Tạo sách mới</div>
+          <div class="flex items-center" v-if="!isLoading">
+            <font-awesome-icon :icon="['fas', 'book']" />
+            <div class="ml-2 text-base">
+              {{ isUpdate ? "Cập nhật sách" : "Tạo sách mới" }}
+            </div>
+          </div>
+          <div v-else class="flex items-center">
+            <div
+              class="animate-spin border-2 border-x-white border-y-transparent rounded-circle w-6 h-6"
+            ></div>
+            <div class="ml-3 text-base">
+              {{ isUpdate ? "Đang cập nhật" : "Đang tạo" }}
+            </div>
+          </div>
         </MyButton>
       </div>
     </div>
@@ -221,6 +233,7 @@ const sach_idUpdate = ref("");
 const closeDropdown = () => {
   checkDropdown.value = false;
 };
+const isLoading = ref(false);
 const toggleDropdown = () => {
   checkDropdown.value = !checkDropdown.value;
 };
@@ -262,27 +275,33 @@ const fetchNewMaSach = () => {
 };
 const submitForm = () => {
   if (validation()) {
+    isLoading.value = true;
     if (isUpdate.value) {
       sachService
         .updateSach(sach_idUpdate.value, sach.value)
-        .then((res) =>
+        .then((res) => {
           myToast(res.data.message, "success", 2000, () => {
             router.push({ name: "BookPage" });
-          })
-        )
+          });
+          isLoading.value = false;
+        })
         .catch((err) => {
-          myToast(err.message);
-          console.log(err);
+          isLoading.value = false;
+          myToast("Lỗi hệ thống, vui lòng thử lại sau!");
         });
     } else {
       sachService
         .createSach(sach.value)
-        .then((res) =>
+        .then((res) => {
           myToast(res.data.message, "success", 2000, () => {
             router.push({ name: "BookPage" });
-          })
-        )
-        .catch((err) => myToast(err.message));
+          });
+          isLoading.value = false;
+        })
+        .catch((err) => {
+          isLoading.value = false;
+          myToast("Lỗi hệ thống, vui lòng thử lại sau!");
+        });
     }
   }
 };
@@ -339,7 +358,7 @@ const fetchDataSachUpdate = () => {
 };
 const setValueSach = (data) => {
   sach.value.donGia = data.donGia;
-  sach.value.maNXB = data.maNXB;
+  sach.value.maNXB = data.maNXB._id;
   sach.value.namXuatBan = data.namXuatBan;
   sach.value.maSach = data.maSach;
   sach.value.soQuyen = data.soQuyen;
@@ -348,6 +367,7 @@ const setValueSach = (data) => {
   sach.value.hinhAnh = data.hinhAnh;
   imageSrc.value = data.hinhAnh;
   sach_idUpdate.value = data._id;
+  nxbSelected.value = data.maNXB.tenNXB;
 };
 onMounted(() => {
   fetchDataNhaXuatBans();

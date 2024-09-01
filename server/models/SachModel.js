@@ -31,7 +31,7 @@ const sachSchema = new mongoose.Schema({
     },
     maNXB: {
         type: mongoose.Schema.ObjectId,
-        ref: "Nhaxuatban",
+        ref: "NhaXuatBan",
         require: true
     },
     tacGia: {

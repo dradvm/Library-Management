@@ -26,12 +26,42 @@ const sachController = {
     getAllSach: async (req, res) => {
         sachModel.find({})
             .then((data) => getNewUrlSignForAllSach(data))
-            .then((data) => sachModel.find({}))
+            .then((data) => sachModel.find({}).populate({
+                path: "maNXB",
+                select: "tenNXB"
+            }))
             .then((data) => res.status(200).json(data))
             .catch((err) => {
-                console.log(err)
                 res.status(500).json({ message: err.message })
             })
+    },
+    getAllSachByFilter: async (req, res) => {
+        const { tenSach, sachPerPage, currentPage } = req.query
+        const tenSachRegex = new RegExp(tenSach !== undefined ? tenSach : "", "i")
+        sachModel.find({})
+            .then((data) => getNewUrlSignForAllSach(data))
+            .then((data) => sachModel.find({
+                tenSach: tenSachRegex
+            }).populate({
+                path: "maNXB",
+                select: "tenNXB"
+            })
+                .skip((currentPage - 1) * sachPerPage)
+                .limit(sachPerPage)
+            )
+            .then((data) => res.status(200).json(data))
+            .catch((err) => {
+                res.status(500).json({ message: err.message })
+            })
+    },
+    getPagesOfSach: async (req, res) => {
+        const { tenSach, sachPerPage } = req.query
+        const tenSachRegex = new RegExp(tenSach !== undefined ? tenSach : "", "i")
+        sachModel.countDocuments({
+            tenSach: tenSachRegex
+        })
+            .then((data) => res.status(200).json({ count: Math.ceil(parseInt(data) / sachPerPage) }))
+            .catch((err) => res.status(500).json(err.message))
     },
     getSachById: async (req, res) => {
         sachModel.findById(req.params.id)
@@ -42,6 +72,10 @@ const sachController = {
         sachModel.findOne({
             maSach: req.params.maSach
         })
+            .populate({
+                path: "maNXB",
+                select: "tenNXB"
+            })
             .then((data) => res.status(200).json(data))
             .catch((err) => res.status(500).json({ message: err.message }))
     },
@@ -70,7 +104,9 @@ const sachController = {
                                 .catch((err) => res.status(500).json({ message: err.message }))
                         })
                 })
-                .catch((err) => res.status(500).json({ message: err.message }))
+                .catch((err) => {
+                    res.status(500).json({ message: err.message })
+                })
         }
         else {
             res.status(500).json({ message: "Không có file" })
@@ -83,8 +119,6 @@ const sachController = {
                 .then((data) => deleteImageFromFirebase(data.duongDanHinhAnh))
                 .then((data) => { })
                 .catch((err) => {
-                    console.log("A")
-                    console.log(err)
                     res.status(500).json({ message: err.message })
                 })
             uploadImageToFirebase(req.file, filePath)
@@ -103,8 +137,6 @@ const sachController = {
                         })
                 })
                 .catch((err) => {
-                    console.log("B")
-                    console.log(err)
                     res.status(500).json({ message: err.message })
                 })
         }
@@ -116,6 +148,7 @@ const sachController = {
     },
     deleteSach: async (req, res) => {
         sachModel.findByIdAndDelete(req.params.id)
+            .then((data) => deleteImageFromFirebase(data.duongDanHinhAnh))
             .then((data) => res.status(200).json({ message: "Xóa sách thành công!" }))
             .catch((err) => res.status(500).json({ message: err.message }))
     },
