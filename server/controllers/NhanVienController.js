@@ -12,7 +12,19 @@ const nhanVienController = {
             .catch((err) => res.status(500).json({ message: err.message }))
     },
     createNhanVien: async (req, res) => {
-        nhanVienModel.create(req.body)
+
+        nhanVienModel.find({
+            chucVu: "NhanVien"
+        })
+            .then((data) => Math.max(...data.map((item) => parseInt(item.msNV.replace("NV24", "")))))
+            .then((data) => {
+                const nhanVien = req.body
+                console.log(data)
+                data = (data === -Infinity || data === Infinity) ? 1 : (data + 1)
+                nhanVien.msNV = `NV${new Date().getFullYear() - 2000}${data.toString().padStart(3, "0")}`
+                return nhanVienModel.create(nhanVien)
+            })
+
             .then((data) => res.status(200).json({ message: "Tạo thành công nhân viên mới" }))
             .catch((err) => res.status(500).json({ message: err.message }))
     },
@@ -26,6 +38,10 @@ const nhanVienController = {
             .then((data) => res.status(200).json({ message: "Xóa nhân viên thành công" }))
             .catch((err) => res.status(500).json({ message: err.message }))
     },
+    getNewMSNV: (req, res) => {
+
+    },
+
 }
 
 module.exports = nhanVienController

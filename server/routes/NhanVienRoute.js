@@ -7,5 +7,6 @@ router.post("/create", nhanVienController.createNhanVien)
 router.patch("/update/:id", nhanVienController.updateNhanVien)
 router.delete("/delete/:id", nhanVienController.deleteNhanVien)
 router.get("/search/:id", nhanVienController.getOneNhanVienById)
+router.get("/newMSNV", nhanVienController.getNewMSNV)
 
 module.exports = router

@@ -71,11 +71,11 @@
           />
         </div>
       </div>
-      <RouterLink to="/Home/AddBook" class="flex justify-around mt-4"
-        ><MyButton size="small" class="w-75"
-          >Thêm sách mới</MyButton
-        ></RouterLink
-      >
+      <div class="flex justify-around mt-4">
+        <RouterLink to="/AddBook" class="flex w-75"
+          ><MyButton size="small">Thêm sách mới</MyButton></RouterLink
+        >
+      </div>
       <div class="grow flex items-center justify-center">
         <div v-if="sachSelected === null" class="text-3xl font-medium">
           Hãy chọn sách!

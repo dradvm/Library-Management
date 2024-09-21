@@ -3,21 +3,18 @@ import LoginPage from "@views/LoginPage.vue"
 import HomeLayout from "@views/HomeLayout.vue"
 import BookPage from "@views/BookPage.vue"
 import AddAndUpdateBook from "@/views/AddAndUpdateBook.vue"
+import EmployeePage from "@/views/EmployeePage.vue"
+import { useAuthStore } from "@/stores/auth"
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
-        {
-            path: "/",
-            name: "IndexPage",
-            component: LoginPage
-        },
         {
             path: "/Login",
             name: "LoginPage",
             component: LoginPage
         },
         {
-            path: "/Home",
+            path: "/",
             name: "HomeLayout",
             component: HomeLayout,
             children: [
@@ -35,10 +32,27 @@ const router = createRouter({
                     path: "UpdateBook/:maSach",
                     name: "UpdateBook",
                     component: AddAndUpdateBook
+                },
+                {
+                    path: "Employee",
+                    name: "EmployeePage",
+                    component: EmployeePage
                 }
             ]
         }
     ]
 })
+
+router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore()
+
+    if (!authStore.isAuthenticated && to.path != "/Login") {
+        next({ path: "/Login" })
+    }
+    else {
+        next()
+    }
+})
+
 
 export default router

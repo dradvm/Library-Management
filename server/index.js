@@ -1,5 +1,4 @@
 const express = require("express")
-const cookieParser = require("cookie-parser")
 const cors = require("cors")
 const morgan = require("./utils/morgan")
 const connection = require("./utils/connection")
@@ -8,6 +7,7 @@ const docGiaRoute = require("./routes/DocGiaRoute")
 const nhanVienRoute = require("./routes/NhanVienRoute")
 const nhaXuatBanRoute = require("./routes/NhaXuatBanRoute")
 const theoDoiMuonSachRoute = require("./routes/TheoDoiMuonSachRoute")
+const authRoute = require("./routes/AuthRoute")
 require("dotenv").config()
 
 
@@ -20,14 +20,13 @@ router.use("/NhaXuatBan", nhaXuatBanRoute)
 router.use("/NhanVien", nhanVienRoute)
 router.use("/DocGia", docGiaRoute)
 router.use("/TheoDoiMuonSach", theoDoiMuonSachRoute)
-
+router.use("/Auth", authRoute)
 
 
 
 
 connection()
 app.use(cors())
-    .use(cookieParser("MySecretKeyValueNotExisting"))
     .use(express.json())
     .use(morgan)
 

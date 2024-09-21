@@ -16,7 +16,7 @@ const sachService = {
     updateSach: (id, sach) => axiosMultipartFormData.patch(`/update/${id}`, sach),
     deleteSach: (id) => axios.delete(`/delete/${id}`),
     getNewMaSach: () => axios.get("/newMaSach"),
-    getSachByMaSach: (maSach) => axios.get(`/searchByMaSach/${maSach}`)
+    getSachByMaSach: (maSach) => axios.get(`/searchByMaSach/${maSach}`),
 }
 
 export default sachService
