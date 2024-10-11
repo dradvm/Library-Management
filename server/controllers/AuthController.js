@@ -1,22 +1,7 @@
 const nhanVienModel = require("../models/NhanVienModel")
-const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
+const { generateRefreshToken, generateAccessToken, generateDataUser } = require("../utils/token")
 require("dotenv").config()
-
-const generateAccessToken = (user) => {
-    return jwt.sign(
-        user,
-        process.env.SERCETKEYACCESSTOKEN,
-        { expiresIn: "15m" }
-    )
-}
-const generateRefreshToken = (user) => {
-    return jwt.sign(
-        user,
-        process.env.SERCETKEYREFRESHTOKEN,
-        { expiresIn: "1d" }
-    )
-}
 
 const AuthController = {
     login: async (req, res) => {
@@ -42,14 +27,8 @@ const AuthController = {
 
             .then((userData) => {
                 if (userData) {
-                    const user = {
-                        id: userData._id,
-                        msNV: userData.msNV,
-                        chucVu: userData.chucVu
-                    }
-                    console.log("A")
                     return nhanVienModel.findByIdAndUpdate(userData._id, {
-                        refreshToken: generateRefreshToken(user)
+                        refreshToken: generateRefreshToken(generateDataUser(userData))
                     }, { new: true })
                 }
                 else {
@@ -59,17 +38,12 @@ const AuthController = {
             })
             .then((userData) => {
                 if (userData) {
-                    const user = {
-                        id: userData._id,
-                        msNV: userData.msNV,
-                        chucVu: userData.chucVu
-                    }
                     res.cookie('refreshToken', userData.refreshToken, {
                         httpOnly: true,
                         sameSite: 'Strict',
                         maxAge: 24 * 60 * 60 * 1000
                     });
-                    return res.status(200).json(generateAccessToken(user))
+                    return res.status(200).json(generateAccessToken(generateDataUser(userData)))
                 }
             })
             .catch((err) => res.status(500).json({ message: err.message }))

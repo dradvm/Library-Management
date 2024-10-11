@@ -274,7 +274,7 @@ const fetchNewMaSach = () => {
     .catch((err) => myToast(err.message));
 };
 const submitForm = () => {
-  if (validation()) {
+  if (validateForm()) {
     isLoading.value = true;
     if (isUpdate.value) {
       sachService
@@ -305,7 +305,7 @@ const submitForm = () => {
     }
   }
 };
-const validation = () => {
+const validateForm = () => {
   if (!imageSrc.value) {
     myToast("Vui lòng chọn hình ảnh sách");
     return false;
@@ -372,11 +372,11 @@ const setValueSach = (data) => {
 onMounted(() => {
   fetchDataNhaXuatBans();
   switch (router.currentRoute.value.name) {
-    case "AddBook": {
+    case "AddBookPage": {
       fetchNewMaSach();
       break;
     }
-    case "UpdateBook": {
+    case "UpdateBookPage": {
       isUpdate.value = true;
       fetchDataSachUpdate();
       break;

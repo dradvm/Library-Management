@@ -26,6 +26,26 @@ const getSignedUrl = async (filePath) => {
         console.error('Error getting signed URL:', err);
     }
 }
+
+
+const getNewUrlSign = async (modelData, modelClass) => {
+    const date = new Date()
+    date.setDate(date.getDate() + 1)
+    if (date >= modelData.hinhAnhHetHan) {
+        getSignedUrl(modelData.duongDanHinhAnh)
+            .then((data) => {
+                return modelClass.findByIdAndUpdate(modelData._id, data)
+            })
+            .then((data) => console.log("Update!"))
+            .catch((err) => res.status(500).json({ message: err.message }))
+    }
+}
+const getNewUrlSignForAll = async (modelDataList, modelClass) => {
+    modelDataList.forEach((modelData) => {
+        getNewUrlSign(modelData, modelClass)
+    })
+}
+
 const uploadImageToFirebase = (file, filePath = "") => {
     return new Promise((resolve, reject) => {
         const blob = bucket.file(filePath)
@@ -57,5 +77,7 @@ const deleteImageFromFirebase = async (filePath = "") => {
 module.exports = {
     uploadImageToFirebase,
     deleteImageFromFirebase,
-    getSignedUrl
+    getSignedUrl,
+    getNewUrlSign,
+    getNewUrlSignForAll
 }

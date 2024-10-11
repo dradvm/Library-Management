@@ -106,7 +106,7 @@
             <MyButton size="small" class="mt-4">Xem thông tin</MyButton>
             <RouterLink
               :to="{
-                name: 'UpdateBook',
+                name: 'UpdateBookPage',
                 params: { maSach: sachSelected.maSach },
               }"
               ><MyButton size="small" class="mt-4"> Cập nhật </MyButton>

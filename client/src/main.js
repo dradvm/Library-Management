@@ -36,8 +36,8 @@ library.add(fas, far, fab);
 
 
 createApp(App)
-    .use(router)
     .use(createPinia())
+    .use(router)
     .use(vuetify)
     .use(Toast)
     .component('font-awesome-icon', FontAwesomeIcon)

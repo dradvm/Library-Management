@@ -2,8 +2,6 @@ import createAxios from "@/utils/axios";
 
 const axios = createAxios("/Sach")
 const axiosMultipartFormData = createAxios("/Sach", "multipart/form-data")
-
-
 const sachService = {
     getAllSach: () => axios.get("/"),
     getAllSachByFilter: (filter) => axios.get("/search", {

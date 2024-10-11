@@ -1,31 +1,13 @@
 const sachModel = require("../models/SachModel")
-const { uploadImageToFirebase, deleteImageFromFirebase, getSignedUrl } = require("../utils/firebase")
+const { uploadImageToFirebase, deleteImageFromFirebase, getNewUrlSignForAll } = require("../utils/firebase")
 const randomstring = require("randomstring")
 
-const getNewUrlSign = async (sach) => {
-    const date = new Date()
-    date.setDate(date.getDate() + 1)
-    if (date >= sach.hinhAnhHetHan) {
-        getSignedUrl(sach.duongDanHinhAnh)
-            .then((data) => {
-                return sachModel.findByIdAndUpdate(sach._id, data)
-            })
-            .then((data) => console.log("Update!"))
-            .catch((err) => res.status(500).json({ message: err.message }))
-    }
 
-}
-const getNewUrlSignForAllSach = async (sachs) => {
-    sachs.forEach((sach) => {
-        getNewUrlSign(sach)
-    })
-
-}
 
 const sachController = {
     getAllSach: async (req, res) => {
         sachModel.find({})
-            .then((data) => getNewUrlSignForAllSach(data))
+            .then((data) => getNewUrlSignForAll(data, sachModel))
             .then((data) => sachModel.find({}).populate({
                 path: "maNXB",
                 select: "tenNXB"
@@ -39,7 +21,7 @@ const sachController = {
         const { tenSach, sachPerPage, currentPage } = req.query
         const tenSachRegex = new RegExp(tenSach !== undefined ? tenSach : "", "i")
         sachModel.find({})
-            .then((data) => getNewUrlSignForAllSach(data))
+            .then((data) => getNewUrlSignForAll(data, sachModel))
             .then((data) => sachModel.find({
                 tenSach: tenSachRegex
             }).populate({

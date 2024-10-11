@@ -76,7 +76,7 @@ import MyButton from "@/components/MyButton.vue";
 import authService from "@/services/AuthService";
 import { useAuthStore } from "@/stores/auth";
 import myToast from "@/utils/toast";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 
 const msNV = ref("");
@@ -85,7 +85,12 @@ const messageErrorMsNV = ref(null);
 const messageErrorPassword = ref(null);
 const authStore = useAuthStore();
 const router = useRouter();
-
+watch(msNV, (oldValue, newValue) => {
+  messageErrorMsNV.value = null;
+});
+watch(password, (oldValue, newValue) => {
+  messageErrorPassword.value = null;
+});
 const validMsNV = () => {
   if (msNV.value.length == 0) {
     messageErrorMsNV.value = "Vui lòng nhập mã số nhân viên";
@@ -120,15 +125,18 @@ const login = () => {
       password: password.value,
     })
     .then((res) => {
-      authStore.login(res.data);
-      router.push({ name: "BookPage" });
+      console.log(res);
+      if (res.status === 401) {
+        messageErrorPassword.value = res.data.message;
+      } else {
+        authStore.login(res.data).then((res) => {
+          router.push({ name: "BookPage" });
+        });
+      }
     })
     .catch((err) => {
-      if (err.response.status === 401) {
-        messageErrorPassword.value = err.response.data.message;
-      } else {
-        myToast(err.message);
-      }
+      console.log(err);
+      myToast(err);
     });
 };
 </script>

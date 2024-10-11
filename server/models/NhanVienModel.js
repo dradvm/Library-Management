@@ -16,6 +16,7 @@ const nhanVienSchema = new mongoose.Schema({
     },
     chucVu: {
         type: String,
+        enum: ["ADMIN", "Nhân viên"],
         require: true
     },
     diaChi: {
@@ -29,6 +30,19 @@ const nhanVienSchema = new mongoose.Schema({
     refreshToken: {
         type: String,
         default: null
+    },
+    hinhAnh: {
+        type: String,
+        require: true
+    },
+    duongDanHinhAnh: {
+        type: String,
+        require: true
+    },
+    hinhAnhHetHan: {
+        type: Date,
+        require: true,
+        default: Date()
     }
 })
 
@@ -42,7 +56,6 @@ nhanVienSchema.pre("save", async function (next) {
     user.password = await bcrypt.hash(user.password, salt)
     next()
 })
-
 
 
 module.exports = mongoose.model("NhanVien", nhanVienSchema)
