@@ -21,7 +21,11 @@
           class="transition cursor-pointer mt-1 px-4 py-3 rounded"
           :class="{
             'hover:bg-slate-800': !['BookPage'].includes(route.name),
-            'bg-slate-700': ['BookPage'].includes(route.name),
+            'bg-slate-700': [
+              'BookPage',
+              'AddBookPage',
+              'UpdateBookPage',
+            ].includes(route.name),
           }"
         >
           <font-awesome-icon :icon="['fas', 'book']" class="text-lg" />
@@ -31,14 +35,26 @@
           class="transition cursor-pointer mt-1 px-4 py-3 rounded"
           :class="{
             'hover:bg-slate-800': !['EmployeePage'].includes(route.name),
-            'bg-slate-700': ['EmployeePage'].includes(route.name),
+            'bg-slate-700': [
+              'EmployeePage',
+              'AddEmployeePage',
+              'UpdateEmployeePage',
+            ].includes(route.name),
           }"
         >
           <font-awesome-icon :icon="['fas', 'user-tie']" class="text-lg" />
         </RouterLink>
         <RouterLink
-          to=""
+          to="/Publisher"
           class="transition cursor-pointer mt-1 hover:bg-slate-800 px-4 py-3 rounded"
+          :class="{
+            'hover:bg-slate-800': !['EmployeePage'].includes(route.name),
+            'bg-slate-700': [
+              'PublisherPage',
+              'AddPublisherPage',
+              'UpdatePublisherPage',
+            ].includes(route.name),
+          }"
         >
           <font-awesome-icon :icon="['fas', 'address-book']" class="text-lg" />
         </RouterLink>

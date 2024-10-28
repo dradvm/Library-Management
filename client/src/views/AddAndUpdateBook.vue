@@ -34,7 +34,11 @@
         </div>
       </div>
       <div class="py-8">
-        <MyButton size="medium" @click="handleFileInputClick">
+        <MyButton
+          size="medium"
+          @click="handleFileInputClick"
+          :disabled="btnDisabled"
+        >
           <font-awesome-icon :icon="['fas', 'upload']" class="me-2" />
           <label class="cursor-pointer text-base">Tải ảnh</label>
           <input
@@ -184,7 +188,7 @@
         </div>
       </div>
       <div class="py-8">
-        <MyButton size="medium" @click="submitForm">
+        <MyButton size="medium" @click="submitForm" :disabled="btnDisabled">
           <div class="flex items-center" v-if="!isLoading">
             <font-awesome-icon :icon="['fas', 'book']" />
             <div class="ml-2 text-base">
@@ -229,7 +233,8 @@ const sach = ref({
 const isUpdate = ref(false);
 const router = useRouter();
 const nxbSelected = ref("");
-const sach_idUpdate = ref("");
+const sachIdUpdate = ref("");
+const btnDisabled = ref(false);
 const closeDropdown = () => {
   checkDropdown.value = false;
 };
@@ -276,9 +281,10 @@ const fetchNewMaSach = () => {
 const submitForm = () => {
   if (validateForm()) {
     isLoading.value = true;
+    btnDisabled.value = true;
     if (isUpdate.value) {
       sachService
-        .updateSach(sach_idUpdate.value, sach.value)
+        .updateSach(sachIdUpdate.value, sach.value)
         .then((res) => {
           myToast(res.data.message, "success", 2000, () => {
             router.push({ name: "BookPage" });
@@ -366,7 +372,7 @@ const setValueSach = (data) => {
   sach.value.tenSach = data.tenSach;
   sach.value.hinhAnh = data.hinhAnh;
   imageSrc.value = data.hinhAnh;
-  sach_idUpdate.value = data._id;
+  sachIdUpdate.value = data._id;
   nxbSelected.value = data.maNXB.tenNXB;
 };
 onMounted(() => {

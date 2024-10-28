@@ -1,17 +1,66 @@
 const nhanVienModel = require("../models/NhanVienModel")
 const { uploadImageToFirebase, deleteImageFromFirebase, getNewUrlSignForAll } = require("../utils/firebase")
 
+
 const nhanVienController = {
     getAllNhanVien: async (req, res) => {
         nhanVienModel.find()
             .select("-password -refreshToken")
+            .then((data) => getNewUrlSignForAll(data, nhanVienModel))
             .then((data) => res.status(200).json(data))
             .catch((err) => res.status(500).json({ message: err.message }))
     },
-    getOneNhanVienById: async (req, res) => {
-        nhanVienModel.findById(req.params.id)
+    getNhanVienByMSNV: async (req, res) => {
+        nhanVienModel.findOne({ msNV: req.params.msNV })
+            .select("-password -refreshToken")
             .then((data) => res.status(200).json(data))
             .catch((err) => res.status(500).json({ message: err.message }))
+    },
+    getAllNhanVienByFilter: async (req, res) => {
+        const { keySearch, nhanVienPerPage, currentPage } = req.query
+        const hoTenNVRegex = new RegExp(keySearch !== undefined ? keySearch : "", "i")
+        const msNVRegex = new RegExp('^[Nn][Vv]?\\d{0,5}$')
+        var searchRegex
+        if (msNVRegex.test(keySearch)) {
+            searchRegex = {
+                msNV: new RegExp(keySearch)
+            }
+        }
+        else {
+            searchRegex = {
+                hoTenNV: hoTenNVRegex
+            }
+        }
+
+        nhanVienModel.find({})
+            .then((data) => getNewUrlSignForAll(data, nhanVienModel))
+            .then((data) => nhanVienModel.find(searchRegex)
+                .skip((currentPage - 1) * nhanVienPerPage)
+                .limit(nhanVienPerPage)
+            )
+            .then((data) => res.status(200).json(data))
+            .catch((err) => {
+                res.status(500).json({ message: err.message })
+            })
+    },
+    getPagesOfNhanVien: async (req, res) => {
+        const { keySearch, nhanVienPerPage } = req.query
+        const hoTenNVRegex = new RegExp(keySearch !== undefined ? keySearch : "", "i")
+        const msNVRegex = new RegExp('^[Nn][Vv]?\\d{0,5}$')
+        var searchRegex
+        if (msNVRegex.test(keySearch)) {
+            searchRegex = {
+                msNV: new RegExp(keySearch)
+            }
+        }
+        else {
+            searchRegex = {
+                hoTenNV: hoTenNVRegex
+            }
+        }
+        nhanVienModel.countDocuments(searchRegex)
+            .then((data) => res.status(200).json({ count: Math.ceil(parseInt(data) / nhanVienPerPage) }))
+            .catch((err) => res.status(500).json(err.message))
     },
     createNhanVien: async (req, res) => {
         if (req.file) {
@@ -51,9 +100,37 @@ const nhanVienController = {
         }
     },
     updateNhanVien: async (req, res) => {
-        nhanVienModel.findByIdAndUpdate(req.params.id, req.body)
-            .then((data) => res.status(200).json({ message: "Cập nhật thành công" }))
-            .catch((err) => res.status(500).json({ message: err.message }))
+        if (req.file) {
+            const filePath = `Sach/${Date.now()}-${req.file.originalname}`
+            nhanVienModel.findById(req.params.id)
+                .then((data) => deleteImageFromFirebase(data.duongDanHinhAnh))
+                .catch((err) => {
+                    res.status(500).json({ message: err.message })
+                })
+            uploadImageToFirebase(req.file, filePath)
+                .then((data) => {
+                    const sach = {
+                        ...req.body,
+                        ...data,
+                        duongDanHinhAnh: filePath,
+                    }
+                    nhanVienModel.findByIdAndUpdate(req.params.id, sach)
+                        .then((data) => res.status(200).json({ message: "Cập nhật nhân viên thành công!" }))
+                        .catch((err) => {
+                            deleteImageFromFirebase(filePath)
+                                .then((data) => res.status(500).json({ message: err.message }))
+                                .catch((err) => res.status(500).json({ message: err.message }))
+                        })
+                })
+                .catch((err) => {
+                    res.status(500).json({ message: err.message })
+                })
+        }
+        else {
+            nhanVienModel.findByIdAndUpdate(req.params.id, req.body)
+                .then((data) => res.status(200).json({ message: "Cập nhật nhân viên thành công" }))
+                .catch((err) => res.status(500).json({ message: err.message }))
+        }
     },
     deleteNhanVien: async (req, res) => {
         nhanVienModel.findByIdAndDelete(req.params.id)

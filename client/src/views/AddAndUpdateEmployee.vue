@@ -34,7 +34,11 @@
         </div>
       </div>
       <div class="py-8 w-100">
-        <MyButton size="medium" @click="handleFileInputClick">
+        <MyButton
+          size="medium"
+          @click="handleFileInputClick"
+          :disabled="btnDisabled"
+        >
           <font-awesome-icon :icon="['fas', 'upload']" class="me-2" />
           <label class="cursor-pointer text-base">Tải ảnh</label>
           <input
@@ -156,7 +160,7 @@
         </div>
       </div>
       <div class="py-8">
-        <MyButton size="medium" @click="submitForm">
+        <MyButton size="medium" @click="submitForm" :disabled="btnDisabled">
           <div class="flex items-center" v-if="!isLoading">
             <font-awesome-icon :icon="['fas', 'book']" />
             <div class="ml-2 text-base">
@@ -199,6 +203,8 @@ const fileInput = ref(null);
 const checkDropdown = ref(false);
 const isLoading = ref(false);
 const router = useRouter();
+const btnDisabled = ref(false);
+const nhanVienIdUpdate = ref("");
 
 const validateForm = () => {
   const soDienThoaiRegex = /^0\d{6,9}$/;
@@ -234,19 +240,34 @@ const validateForm = () => {
 const submitForm = () => {
   if (validateForm()) {
     isLoading.value = true;
-    nhanVienService
-      .createNhanVien(nhanVien.value)
-      .then((res) => {
-        myToast(res.data.message, "success", 2000, () => {
-          router.push({ name: "EmployeePage" });
+    btnDisabled.value = true;
+    if (isUpdate.value) {
+      nhanVienService
+        .updateNhanVien(nhanVienIdUpdate.value, nhanVien.value)
+        .then((res) => {
+          myToast(res.data.message, "success", 2000, () => {
+            router.push({ name: "EmployeePage" });
+          });
+          isLoading.value = false;
+        })
+        .catch((err) => {
+          isLoading.value = false;
+          myToast("Lỗi hệ thống, vui lòng thử lại sau!");
         });
-        isLoading.value = false;
-      })
-      .catch((err) => {
-        isLoading.value = false;
-        console.log(err);
-        myToast("Lỗi hệ thống, vui lòng thử lại sau!");
-      });
+    } else {
+      nhanVienService
+        .createNhanVien(nhanVien.value)
+        .then((res) => {
+          myToast(res.data.message, "success", 2000, () => {
+            router.push({ name: "EmployeePage" });
+          });
+          isLoading.value = false;
+        })
+        .catch((err) => {
+          isLoading.value = false;
+          myToast("Lỗi hệ thống, vui lòng thử lại sau!");
+        });
+    }
   }
 };
 
@@ -287,7 +308,34 @@ const selectChucVu = (chucVu) => {
   nhanVien.value.chucVu = chucVu;
 };
 
+const fetchDataNhanVienUpdate = () => {
+  nhanVienService
+    .getNhanVienByMSNV(router.currentRoute.value.params.msNV)
+    .then((res) => setValuesNhanVien(res.data))
+    .catch((err) => myToast(err));
+};
+
+const setValuesNhanVien = (data) => {
+  nhanVien.value.hinhAnh = data.hinhAnh;
+  imageSrc.value = data.hinhAnh;
+  nhanVien.value.hoTenNV = data.hoTenNV;
+  nhanVien.value.soDienThoai = data.soDienThoai;
+  nhanVien.value.diaChi = data.diaChi;
+  nhanVien.value.chucVu = data.chucVu;
+  nhanVienIdUpdate.value = data._id;
+};
+
 onMounted(() => {
   fetchDataChucVus();
+  switch (router.currentRoute.value.name) {
+    case "AddEmployeePage": {
+      break;
+    }
+    case "UpdateEmployeePage": {
+      isUpdate.value = true;
+      fetchDataNhanVienUpdate();
+      break;
+    }
+  }
 });
 </script>

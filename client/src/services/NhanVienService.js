@@ -4,17 +4,16 @@ const axios = createAxios("/NhanVien")
 const axiosMultipartFormData = createAxios("/NhanVien", "multipart/form-data")
 const nhanVienService = {
     getAllNhanVien: () => axios.get("/"),
-    // getAllNhanVienByFilter: (filter) => axios.get("/search", {
-    //     params: filter
-    // }),
-    // getPagesOfNhanVien: (filter) => axios.get("/pages", {
-    //     params: filter
-    // }),
-    createNhanVien: (NhanVien) => axiosMultipartFormData.post("/create", NhanVien),
-    updateNhanVien: (id, NhanVien) => axiosMultipartFormData.patch(`/update/${id}`, NhanVien),
+    getAllNhanVienByFilter: (filter) => axios.get("/search", {
+        params: filter
+    }),
+    getPagesOfNhanVien: (filter) => axios.get("/pages", {
+        params: filter
+    }),
+    createNhanVien: (nhanVien) => axiosMultipartFormData.post("/create", nhanVien),
+    updateNhanVien: (id, nhanVien) => axiosMultipartFormData.patch(`/update/${id}`, nhanVien),
     deleteNhanVien: (id) => axios.delete(`/delete/${id}`),
-    // getNewMaNhanVien: () => axios.get("/newMaNhanVien"),
-    // getNhanVienByMaNhanVien: (maNhanVien) => axios.get(`/searchByMaNhanVien/${maNhanVien}`),
+    getNhanVienByMSNV: (msNV) => axios.get(`/searchByMSNV/${msNV}`),
     getEnumChucVuValues: () => axios.get("/enumChucVuValues")
 }
 

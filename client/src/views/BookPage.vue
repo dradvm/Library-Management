@@ -45,9 +45,7 @@
         <div class="text-5xl font-medium" v-else>Không tìm thấy sách!</div>
       </div>
       <div class="h-100 flex items-center justify-around" v-else>
-        <div
-          class="animate-spin border-4 border-x-indigo-600 border-y-transparent w-36 h-36 rounded-circle"
-        ></div>
+        <LoadingSpinning></LoadingSpinning>
       </div>
     </div>
     <div class="w-3/12 shadow flex flex-column">
@@ -122,6 +120,7 @@
   </div>
 </template>
 <script setup>
+import LoadingSpinning from "@/components/LoadingSpinning.vue";
 import MyButton from "@/components/MyButton.vue";
 import sachService from "@/services/SachService";
 import debounce from "@/utils/debounce";
@@ -159,8 +158,8 @@ const fetchDataSachs = () => {
       isLoading.value = false;
     })
     .catch((err) => {
-      console.log(err);
       isLoading.value = false;
+      myToast(err.message);
     });
 };
 const fetchPagesOfSach = () => {

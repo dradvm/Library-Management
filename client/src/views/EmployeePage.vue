@@ -20,6 +20,7 @@
             type="text"
             class="focus:outline-none focus:ring-0 w-100"
             v-model="search"
+            @input="debounceSearch"
           />
           <font-awesome-icon
             :icon="['fas', 'xmark']"
@@ -42,7 +43,7 @@
         <div class="flex justify-center" style="width: 20%">SĐT</div>
         <div class="flex justify-center" style="width: 10%"></div>
       </div>
-      <div class="rounded">
+      <div class="rounded" v-if="!isLoading">
         <div
           v-for="item in nhanViens"
           class="flex cursor-default shadow-sm items-center hover:shadow hover:bg-indigo-100 transition duration-100 pe-4 py-3"
@@ -77,50 +78,120 @@
             {{ item.soDienThoai }}
           </div>
           <div class="flex justify-evenly" style="width: 10%">
-            <RouterLink>
+            <RouterLink
+              :to="{
+                name: 'UpdateEmployeePage',
+                params: {
+                  msNV: item.msNV,
+                },
+              }"
+            >
               <MyButton size="small" type="success">
                 <font-awesome-icon :icon="['fas', 'pen-to-square']" />
               </MyButton>
             </RouterLink>
-            <RouterLink v-if="item.chucVu != 'ADMIN'">
-              <MyButton size="small" type="danger">
+            <RouterLink>
+              <MyButton
+                size="small"
+                type="danger"
+                v-if="item.chucVu != 'ADMIN'"
+                @click="deleteNhanVien(item._id)"
+              >
                 <font-awesome-icon :icon="['fas', 'delete-left']" />
               </MyButton>
             </RouterLink>
           </div>
         </div>
       </div>
+      <div class="my-32 flex items-center justify-around" v-else>
+        <LoadingSpinning></LoadingSpinning>
+      </div>
     </div>
+    <v-pagination
+      v-model="currentPage"
+      :length="pages"
+      :total-visible="4"
+      class="my-5"
+      v-if="!isLoading"
+    ></v-pagination>
   </div>
 </template>
 
 <script setup>
+import LoadingSpinning from "@/components/LoadingSpinning.vue";
 import MyButton from "@/components/MyButton.vue";
 import nhanVienService from "@/services/NhanVienService";
+import debounce from "@/utils/debounce";
 import myToast from "@/utils/toast";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 const nhanViens = ref([]);
 const isLoading = ref(false);
 const search = ref("");
+const nhanVienPerPage = ref(5);
+const currentPage = ref(1);
+const pages = ref(0);
 const resetSearch = () => {
   search.value = "";
+  fetchData();
 };
 
 const fetchDataNhanViens = () => {
   isLoading.value = true;
   nhanVienService
-    .getAllNhanVien()
+    .getAllNhanVienByFilter({
+      keySearch: search.value,
+      nhanVienPerPage: nhanVienPerPage.value,
+      currentPage: currentPage.value,
+    })
     .then((res) => {
       nhanViens.value = res.data;
+      isLoading.value = false;
     })
     .catch((err) => {
-      console.log(err);
       myToast(err.message);
     });
 };
 
-onMounted(() => {
+const fetchPagesOfNhanVien = () => {
+  nhanVienService
+    .getPagesOfNhanVien({
+      keySearch: search.value,
+      nhanVienPerPage: nhanVienPerPage.value,
+    })
+    .then((res) => (pages.value = res.data.count))
+    .catch((err) => console.log(err));
+};
+
+const fetchData = () => {
   fetchDataNhanViens();
+  fetchPagesOfNhanVien();
+};
+
+const deleteNhanVien = (id) => {
+  isLoading.value = true;
+  nhanVienService
+    .deleteNhanVien(id)
+    .then((res) => {
+      myToast(res.data.message, "success");
+      fetchDataNhanViens();
+    })
+    .catch((err) => {
+      myToast(err.message);
+    });
+};
+const debounceSearch = () => {
+  isLoading.value = true;
+  debounceFunctionSearch();
+};
+const debounceFunctionSearch = debounce(fetchData, 1000);
+onMounted(() => {
+  fetchData();
+});
+watch(search, () => {
+  currentPage.value = 1;
+});
+watch(currentPage, () => {
+  fetchData();
 });
 </script>

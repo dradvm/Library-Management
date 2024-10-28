@@ -6,6 +6,7 @@ import AddAndUpdateBook from "@/views/AddAndUpdateBook.vue"
 import EmployeePage from "@/views/EmployeePage.vue"
 import { useAuthStore } from "@/stores/auth"
 import AddAndUpdateEmployee from "@/views/AddAndUpdateEmployee.vue"
+import PublisherPage from "@/views/PublisherPage.vue"
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -47,9 +48,14 @@ const router = createRouter({
                 },
 
                 {
-                    path: "UpdateEmployee",
+                    path: "UpdateEmployee/:msNV",
                     name: "UpdateEmployeePage",
                     component: AddAndUpdateEmployee
+                },
+                {
+                    path: "Publisher",
+                    name: "PublisherPage",
+                    component: PublisherPage
                 }
             ]
         },

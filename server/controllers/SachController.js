@@ -8,10 +8,10 @@ const sachController = {
     getAllSach: async (req, res) => {
         sachModel.find({})
             .then((data) => getNewUrlSignForAll(data, sachModel))
-            .then((data) => sachModel.find({}).populate({
+            .populate({
                 path: "maNXB",
                 select: "tenNXB"
-            }))
+            })
             .then((data) => res.status(200).json(data))
             .catch((err) => {
                 res.status(500).json({ message: err.message })
@@ -99,7 +99,6 @@ const sachController = {
             const filePath = `Sach/${Date.now()}-${req.file.originalname}`
             sachModel.findById(req.params.id)
                 .then((data) => deleteImageFromFirebase(data.duongDanHinhAnh))
-                .then((data) => { })
                 .catch((err) => {
                     res.status(500).json({ message: err.message })
                 })

@@ -44,6 +44,7 @@ const getNewUrlSignForAll = async (modelDataList, modelClass) => {
     modelDataList.forEach((modelData) => {
         getNewUrlSign(modelData, modelClass)
     })
+    return modelClass.find({})
 }
 
 const uploadImageToFirebase = (file, filePath = "") => {
