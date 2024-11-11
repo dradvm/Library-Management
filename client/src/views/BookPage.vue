@@ -70,7 +70,11 @@
         </div>
       </div>
       <div class="flex justify-around mt-4">
-        <RouterLink to="/AddBook" class="flex w-75"
+        <RouterLink
+          :to="{
+            name: 'AddBookPage',
+          }"
+          class="flex w-75"
           ><MyButton size="small">Thêm sách mới</MyButton></RouterLink
         >
       </div>
@@ -86,9 +90,7 @@
             </div>
             <div class="flex justify-around">
               <div class="italic flex items-center">
-                <div>--</div>
                 <div>{{ sachSelected.tacGia }}</div>
-                <div>--</div>
               </div>
             </div>
             <div class="mt-2 text-sm text-start">

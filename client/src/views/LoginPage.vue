@@ -1,72 +1,98 @@
 <template>
   <div class="fixed flex items-center justify-center h-100 w-100 bg-slate-50">
-    <div style="width: 500px; height: 85vh">
-      <div class="flex flex-col items-center">
-        <img src="../assets/logo.png" width="100" />
-        <div class="text-2xl font-semibold">Đăng nhập vào tài khoản</div>
-      </div>
-      <form class="bg-white px-14 py-10 mt-5 rounded-lg shadow">
+    <div
+      class="bg-white shadow-lg flex overflow-hidden"
+      style="width: 800px; height: 450px"
+    >
+      <div class="px-14 py-10 w-3/5">
         <div>
-          <div>
+          <div class="text-2xl font-medium text-center text-indigo-600">
+            Đăng Nhập
+          </div>
+          <div class="mt-10">
             <label
-              for="msnv"
-              class="block text-sm font-semibold leading-6 text-gray-900"
-              >Mã số nhân viên</label
+              for="email"
+              class="block font-semibold leading-6 text-gray-900"
+              >Email</label
             >
-            <div class="mt-0.5">
+            <div class="mt-1">
               <input
-                v-model="msNV"
-                id="msnv"
-                name="msnv"
-                type="text"
+                v-model="email"
+                id="email"
+                name="email"
+                type="email"
                 required="true"
-                class="block w-full font-medium rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                class="block w-full rounded-full border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+            <div
+              class="text-red-500 font-medium text-sm mt-1"
+              v-if="messageErrorEmail"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'circle-exclamation']"
+                class="me-2"
+              />
+              <span>{{ messageErrorEmail }}</span>
+            </div>
           </div>
-          <div
-            class="text-red-500 font-medium text-sm mt-1"
-            v-if="messageErrorMsNV"
-          >
-            <font-awesome-icon
-              :icon="['fas', 'circle-exclamation']"
-              class="me-2"
-            />
-            <span>{{ messageErrorMsNV }}</span>
-          </div>
-          <div></div>
-          <div class="mt-2">
+
+          <div class="mt-4">
             <label
               for="password"
-              class="block text-sm font-semibold leading-6 text-gray-900"
+              class="block font-semibold leading-6 text-gray-900"
               >Mật khẩu</label
             >
-            <div class="mt-0.5">
+            <div class="mt-1">
               <input
                 v-model="password"
                 id="password"
                 name="password"
                 type="password"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                class="block w-full rounded-full border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
-          </div>
-
-          <div
-            class="text-red-500 font-medium text-sm mt-1"
-            v-if="messageErrorPassword"
-          >
-            <font-awesome-icon
-              :icon="['fas', 'circle-exclamation']"
-              class="me-2"
-            />
-            <span>{{ messageErrorPassword }}</span>
+            <div class="flex justify-between items-center">
+              <div
+                v-if="messageErrorPassword"
+                class="text-red-500 font-medium text-sm mt-1"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'circle-exclamation']"
+                  class="me-2"
+                />
+                <span>{{ messageErrorPassword }}</span>
+              </div>
+              <div v-else></div>
+              <div
+                class="text-indigo-500 text-xs font-medium cursor-pointer hover:text-indigo-700 transition"
+                :class="{ 'mt-1': !messageErrorPassword }"
+              >
+                Quên mật khẩu?
+              </div>
+            </div>
           </div>
         </div>
-        <div class="mt-5">
+
+        <div class="mt-7">
           <MyButton size="small" @click="login">Đăng nhập</MyButton>
         </div>
-      </form>
+      </div>
+      <div
+        class="bg-gradient-to-b text-center text-white from-indigo-700 to-indigo-900 w-2/5 flex items-center justify-around"
+      >
+        <div class="flex flex-column justify-around items-center">
+          <div class="text-xl font-medium">Chào mừng bạn đăng nhập</div>
+          <div class="mt-2 text-sm">Chưa có tài khoản?</div>
+          <RouterLink style="border: 1px solid white" class="rounded-full mt-3">
+            <MyButton type="type2" size="small" class="w-32" :is-hover="false"
+              ><span class="text-white hover:text-slate-500 text-sm"
+                >Đăng ký ngay!</span
+              ></MyButton
+            >
+          </RouterLink>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -79,32 +105,32 @@ import myToast from "@/utils/toast";
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 
-const msNV = ref("");
+const email = ref("");
 const password = ref("");
-const messageErrorMsNV = ref(null);
+const messageErrorEmail = ref(null);
 const messageErrorPassword = ref(null);
 const authStore = useAuthStore();
 const router = useRouter();
-watch(msNV, (oldValue, newValue) => {
-  messageErrorMsNV.value = null;
+watch(email, (oldValue, newValue) => {
+  messageErrorEmail.value = null;
 });
 watch(password, (oldValue, newValue) => {
   messageErrorPassword.value = null;
 });
-const validMsNV = () => {
-  if (msNV.value.length == 0) {
-    messageErrorMsNV.value = "Vui lòng nhập mã số nhân viên";
+const validEmail = () => {
+  if (email.value.length == 0) {
+    messageErrorEmail.value = "Vui lòng nhập mã số nhân viên";
     return false;
-  } else if (msNV.value.trim().length == 0) {
-    messageErrorMsNV.value = "Vui lòng không nhập các kí tự trắng";
+  } else if (email.value.trim().length == 0) {
+    messageErrorEmail.value = "Vui lòng không nhập các kí tự trắng";
     return false;
   }
-  messageErrorMsNV.value = null;
+  messageErrorEmail.value = null;
   return true;
 };
 const validPassword = () => {
   if (password.value.length == 0) {
-    messageErrorPassword.value = "Vui lòng nhập password";
+    messageErrorPassword.value = "Vui lòng nhập mật khẩu";
     return false;
   } else if (password.value.trim().length == 0) {
     messageErrorPassword.value = "Vui lòng không nhập các kí tự trắng";
@@ -114,14 +140,14 @@ const validPassword = () => {
   return true;
 };
 const login = () => {
-  const checkMsNV = validMsNV();
+  const checkEmail = validEmail();
   const checkPassword = validPassword();
-  if (!checkMsNV || !checkPassword) {
+  if (!checkEmail || !checkPassword) {
     return;
   }
   authService
     .login({
-      msNV: msNV.value,
+      email: email.value,
       password: password.value,
     })
     .then((res) => {

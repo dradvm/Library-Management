@@ -91,7 +91,7 @@
     ></v-pagination>
   </div>
 
-  <Modal :is-visible="isVisibleModal" @close="isVisibleModal = false">
+  <Modal :is-visible="isVisibleModal" @close="toggleModal(false)">
     <div class="font-bold text-center text-2xl">THÊM NHÀ XUẤT BẢN</div>
     <div class="mt-4">
       <div class="mt-4">
@@ -109,14 +109,14 @@
     <div class="mt-6 flex justify-evenly">
       <MyButton
         size="small"
-        class="w-32"
+        class="w-28"
         @click="submitForm"
         :disabled="isLoadingForm"
         >{{ nhaXuatBan._id == "" ? "Thêm" : "Cập nhật" }}</MyButton
       >
       <MyButton
         size="small"
-        class="w-32"
+        class="w-28"
         type="danger"
         @click="toggleModal(false)"
         :disabled="isLoadingForm"

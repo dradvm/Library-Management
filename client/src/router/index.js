@@ -1,68 +1,99 @@
 import { createRouter, createWebHistory } from "vue-router"
-import LoginPage from "@views/LoginPage.vue"
-import HomeLayout from "@views/HomeLayout.vue"
+import LoginPageManager from "@views/LoginPageManager.vue"
+import HomeManagerLayout from "@views/HomeManagerLayout.vue"
 import BookPage from "@views/BookPage.vue"
 import AddAndUpdateBook from "@/views/AddAndUpdateBook.vue"
 import EmployeePage from "@/views/EmployeePage.vue"
 import { useAuthStore } from "@/stores/auth"
 import AddAndUpdateEmployee from "@/views/AddAndUpdateEmployee.vue"
 import PublisherPage from "@/views/PublisherPage.vue"
+import HomeLayout from "@/views/HomeLayout.vue"
+import HomePage from "@/views/HomePage.vue"
+import LoginPage from "@/views/LoginPage.vue"
+import RegisterPage from "@/views/RegisterPage.vue"
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
-            path: "/Login",
+            path: "/Manager",
+            component: null,
+            children: [
+                {
+                    path: "Login",
+                    name: "LoginPageManager",
+                    component: LoginPageManager
+                },
+                {
+                    path: "",
+                    name: "HomeManagerLayout",
+                    component: HomeManagerLayout,
+                    children: [
+                        {
+                            path: "Book",
+                            name: "BookPage",
+                            component: BookPage
+                        },
+                        {
+                            path: "AddBook",
+                            name: "AddBookPage",
+                            component: AddAndUpdateBook
+                        },
+                        {
+                            path: "UpdateBook/:maSach",
+                            name: "UpdateBookPage",
+                            component: AddAndUpdateBook
+                        },
+                        {
+                            path: "Employee",
+                            name: "EmployeePage",
+                            component: EmployeePage
+                        },
+                        {
+                            path: "AddEmployee",
+                            name: "AddEmployeePage",
+                            component: AddAndUpdateEmployee
+                        },
+
+                        {
+                            path: "UpdateEmployee/:msNV",
+                            name: "UpdateEmployeePage",
+                            component: AddAndUpdateEmployee
+                        },
+                        {
+                            path: "Publisher",
+                            name: "PublisherPage",
+                            component: PublisherPage
+                        }
+                    ]
+                },
+            ]
+        },
+        {
+            path: "/LoginPage",
             name: "LoginPage",
             component: LoginPage
         },
         {
-            path: "/",
-            name: "HomeLayout",
-            component: HomeLayout,
-            redirect: "/Book",
-            children: [
-                {
-                    path: "Book",
-                    name: "BookPage",
-                    component: BookPage
-                },
-                {
-                    path: "AddBook",
-                    name: "AddBookPage",
-                    component: AddAndUpdateBook
-                },
-                {
-                    path: "UpdateBook/:maSach",
-                    name: "UpdateBookPage",
-                    component: AddAndUpdateBook
-                },
-                {
-                    path: "Employee",
-                    name: "EmployeePage",
-                    component: EmployeePage
-                },
-                {
-                    path: "AddEmployee",
-                    name: "AddEmployeePage",
-                    component: AddAndUpdateEmployee
-                },
-
-                {
-                    path: "UpdateEmployee/:msNV",
-                    name: "UpdateEmployeePage",
-                    component: AddAndUpdateEmployee
-                },
-                {
-                    path: "Publisher",
-                    name: "PublisherPage",
-                    component: PublisherPage
-                }
-            ]
+            path: "/RegisterPage",
+            name: "RegisterPage",
+            component: RegisterPage
         },
         {
-            path: "/:pathMatch(.*)*",
-            redirect: "/Book"
-        }
+            path: "/",
+            component: HomeLayout,
+            children: [
+                {
+                    path: "",
+                    name: "HomePage",
+                    component: HomePage
+                },
+
+            ]
+        },
+        // {
+        //     path: "/:pathMatch(.*)*",
+        //     redirect: "/Manager/Book"
+        // }
     ]
 })
 
