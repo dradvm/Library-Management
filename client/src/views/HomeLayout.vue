@@ -1,7 +1,7 @@
 <template>
-  <div class="fixed flex h-100 w-100">
+  <div class="fixed flex h-100 w-100" @click="toggleSearchBox(false)">
     <div class="flex flex-column px-8 py-6 w-60 border">
-      <RouterLink to="" class="flex items-center">
+      <RouterLink :to="{ name: 'HomePage' }" class="flex items-center">
         <font-awesome-icon
           :icon="['fas', 'book-open']"
           class="text-3xl text-blue-600"
@@ -11,46 +11,80 @@
         </div>
       </RouterLink>
       <div class="flex flex-column mt-6">
-        <RouterLink to="" class="my-2 flex items-center">
+        <RouterLink
+          :to="{ name: 'HomePage' }"
+          class="my-2 flex items-center group"
+        >
           <font-awesome-icon
             :icon="['fas', 'house']"
-            class="w-4 h-4 text-white transition cursor-pointer text-lg px-2 py-2 bg-blue-600 rounded"
+            class="w-4 h-4 transition cursor-pointer text-lg px-2 py-2 rounded"
+            :class="{
+              'bg-blue-600 text-white': ['HomePage'].includes(route.name),
+              'group-hover:bg-slate-200 bg-slate-100 text-slate-400': ![
+                'HomePage',
+              ].includes(route.name),
+            }"
           />
-          <span class="font-medium ms-4">Home</span>
+          <span
+            class="ms-4"
+            :class="{
+              'font-medium': ['HomePage'].includes(route.name),
+              'group-hover:font-medium': !['HomePage'].includes(route.name),
+            }"
+            >Home</span
+          >
         </RouterLink>
-        <RouterLink to="" class="my-2 flex items-center group">
+        <RouterLink
+          :to="{ name: 'DiscoverBookPage' }"
+          class="my-2 flex items-center group"
+        >
           <font-awesome-icon
             :icon="['fas', 'book']"
-            class="w-4 h-4 transition cursor-pointer text-lg px-2 py-2 group-hover:bg-slate-200 bg-blue-600 rounded bg-slate-100 text-slate-400"
+            class="w-4 h-4 transition cursor-pointer text-lg px-2 py-2 rounded"
+            :class="{
+              'bg-blue-600 text-white': [
+                'DiscoverBookPage',
+                'BookDetailPage',
+              ].includes(route.name),
+              'group-hover:bg-slate-200 bg-slate-100 text-slate-400': ![
+                'DiscoverBookPage',
+                'BookDetailPage',
+              ].includes(route.name),
+            }"
           />
-          <span class="group-hover:font-medium ms-4">Discover</span>
+          <span
+            class="ms-4"
+            :class="{
+              'font-medium': ['DiscoverBookPage'].includes(route.name),
+              'group-hover:font-medium': !['DiscoverBookPage'].includes(
+                route.name
+              ),
+            }"
+            >Discover</span
+          >
         </RouterLink>
         <hr class="my-3" />
-        <RouterLink to="" class="my-2 flex items-center group">
-          <font-awesome-icon
-            :icon="['fas', 'user']"
-            class="w-4 h-4 transition cursor-pointer text-lg px-2 py-2 group-hover:bg-slate-200 bg-blue-600 rounded bg-slate-100 text-slate-400"
-          />
-          <span class="group-hover:font-medium ms-4">Discover</span>
-        </RouterLink>
       </div>
     </div>
     <div class="grow h-100">
       <div class="h-16 shadow flex items-center justify-between px-12">
         <div>
-          <div class="bg-slate-100 rounded-md px-4 py-1">
-            <div class="flex items-center">
-              <font-awesome-icon
-                :icon="['fas', 'magnifying-glass']"
-                class="text-slate-400"
-              />
-              <input
-                type="text"
-                class="focus:outline-none focus:ring-0 bg-slate-100"
-                v-model="search"
-                @input="debounceSearch"
-                style="width: 500px"
-              />
+          <div class="bg-slate-100 rounded-md px-4 py-1 relative" @click.stop>
+            <div class="flex items-center justify-between" style="width: 500px">
+              <div class="grow flex items-center">
+                <font-awesome-icon
+                  :icon="['fas', 'magnifying-glass']"
+                  class="text-slate-400"
+                />
+                <input
+                  type="text"
+                  class="focus:outline-none focus:ring-0 bg-slate-100 grow"
+                  v-model="search"
+                  @keypress.enter="searchBook"
+                  @input="debounceSearch"
+                  @click="toggleSearchBox(true)"
+                />
+              </div>
               <font-awesome-icon
                 :icon="['fas', 'xmark']"
                 class="cursor-pointer"
@@ -58,18 +92,76 @@
                 @click="resetSearch"
               />
             </div>
+            <div
+              v-if="isOpenSearchBox && sachs.length > 0"
+              class="absolute border bg-white rounded shadow-lg w-100 top-14 left-0 z-50"
+            >
+              <RouterLink
+                v-if="!isLoading"
+                v-for="item in sachs"
+                :to="{
+                  name: 'BookDetailPage',
+                  params: {
+                    maSach: item.maSach,
+                  },
+                }"
+                @click="toggleSearchBox(false)"
+                class="px-4 py-3 flex space-x-4 w-100 hover:bg-slate-50 cursor-pointer"
+              >
+                <div>
+                  <img :src="item.hinhAnh" class="h-12 w-8 bg-slate-100" />
+                </div>
+                <div class="flex flex-column ms-3 w-100 space-y-3 mt-1">
+                  <div class="font-medium text-sm truncate">
+                    {{ item.tenSach }}
+                  </div>
+                  <div class="truncate mt-1 text-xs text-slate-600">
+                    {{ item.tacGia }}
+                  </div>
+                </div>
+              </RouterLink>
+              <div
+                v-else
+                v-for="item in [1, 2, 3]"
+                class="px-4 py-3 flex space-x-4 w-100"
+              >
+                <div>
+                  <div class="h-12 w-8 bg-slate-100"></div>
+                </div>
+                <div class="flex flex-column ms-3 w-100 space-y-3 mt-1">
+                  <div class="w-80 h-2 rounded-md bg-slate-100"></div>
+                  <div class="w-32 h-2 rounded-md bg-slate-100"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="flex">
-          <MyButton size="small" type="type2" :is-hover="false"
-            >Đăng nhập</MyButton
+          <RouterLink
+            :to="{
+              name: 'LoginPage',
+            }"
           >
-          <MyButton size="small" type="type3" :is-hover="false"
-            >Đăng ký</MyButton
+            <MyButton size="small" type="type2" :is-hover="false"
+              >Đăng nhập</MyButton
+            >
+          </RouterLink>
+          <RouterLink
+            :to="{
+              name: 'RegisterPage',
+            }"
           >
+            <MyButton size="small" type="type3" :is-hover="false"
+              >Đăng ký</MyButton
+            >
+          </RouterLink>
         </div>
       </div>
-      <RouterView class="grow"></RouterView>
+      <RouterView
+        class="grow"
+        :search-value="searchValue"
+        :key="$route.params.maSach"
+      ></RouterView>
     </div>
   </div>
 </template>
@@ -78,18 +170,51 @@
 
 <script setup>
 import MyButton from "@/components/MyButton.vue";
+import { onMounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import sachService from "@/services/SachService";
 import debounce from "@/utils/debounce";
-import { ref } from "vue";
 const search = ref("");
-
-const fetchData = () => {};
-
+const searchValue = ref("");
+const route = useRoute();
+const router = useRouter();
+const isOpenSearchBox = ref(false);
+const sachs = ref([]);
+const isLoading = ref(false);
 const resetSearch = () => {
   search.value = "";
-  fetchData();
+};
+const toggleSearchBox = (value) => {
+  isOpenSearchBox.value = value;
+  if (value) {
+    fetchDataSachs();
+  }
+};
+const searchBook = () => {
+  toggleSearchBox(false);
+  searchValue.value = search.value;
+  router.push({ name: "DiscoverBookPage" });
+};
+const fetchDataSachs = () => {
+  isLoading.value = true;
+  sachService
+    .getAllSachByFilter({
+      tenSach: search.value,
+      sachPerPage: 3,
+      currentPage: 1,
+    })
+    .then((res) => {
+      sachs.value = res.data;
+      isLoading.value = false;
+    })
+    .catch((err) => {
+      isLoading.value = false;
+      myToast(err.message);
+    });
 };
 const debounceSearch = () => {
+  isLoading.value = true;
   debounceFunctionSearch();
 };
-const debounceFunctionSearch = debounce(fetchData, 1000);
+const debounceFunctionSearch = debounce(fetchDataSachs, 500);
 </script>

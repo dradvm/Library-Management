@@ -1,10 +1,11 @@
 const nhanVienModel = require("../models/NhanVienModel")
+const docGiaModel = require("../models/DocGiaModel")
 const bcrypt = require("bcrypt")
 const { generateRefreshToken, generateAccessToken, generateDataUser } = require("../utils/token")
 require("dotenv").config()
 
 const AuthController = {
-    login: async (req, res) => {
+    loginEmployee: async (req, res) => {
         const userLogin = req.body
         nhanVienModel.findOne({
             msNV: userLogin.msNV
@@ -47,6 +48,56 @@ const AuthController = {
                 }
             })
             .catch((err) => res.status(500).json({ message: err.message }))
+    },
+    register: async (req, res) => {
+        const docGia = req.body
+        if (docGia.phai == "Male") {
+            docGia.phai = true
+        }
+        else {
+            docGia.phai = false
+        }
+        docGia.ngaySinh = new Date(docGia.ngaySinh)
+        docGiaModel.exists({ email: docGia.email })
+            .then((exist) => {
+                if (exist) {
+                    res.status(409).json({ message: "Email đã được đăng ký" })
+                    return null
+                }
+                else {
+                    return docGiaModel.find({})
+                }
+            })
+            .then((data) => {
+                if (data) {
+                    return Math.max(...data.map((item) => parseInt(item.maDocGia.replace("DG", ""))))
+                }
+                else {
+                    return null
+                }
+            })
+            .then((data) => {
+                if (data) {
+                    data = (data === -Infinity || data === Infinity) ? 1 : (data + 1)
+                    const newMaDocGia = `DG${data.toString().padStart(7, "0")}`
+                    return docGiaModel.create({
+                        maDocGia: newMaDocGia,
+                        ...req.body
+                    })
+                }
+                else {
+                    return null
+                }
+            })
+            .then((data) => {
+                if (data) {
+                    res.status(200).json({ message: "Đăng ký thành công" })
+                }
+            })
+            .catch((err) => {
+                console.log(err.message)
+                res.status(500).json({ message: err.message })
+            })
     }
 }
 module.exports = AuthController

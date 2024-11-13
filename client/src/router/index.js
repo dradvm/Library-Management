@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router"
-import LoginPageManager from "@views/LoginPageManager.vue"
 import HomeManagerLayout from "@views/HomeManagerLayout.vue"
 import BookPage from "@views/BookPage.vue"
 import AddAndUpdateBook from "@/views/AddAndUpdateBook.vue"
@@ -11,6 +10,9 @@ import HomeLayout from "@/views/HomeLayout.vue"
 import HomePage from "@/views/HomePage.vue"
 import LoginPage from "@/views/LoginPage.vue"
 import RegisterPage from "@/views/RegisterPage.vue"
+import LoginManagerPage from "@/views/LoginManagerPage.vue"
+import DiscoverBookPage from "@/views/DiscoverBookPage.vue"
+import BookDetailPage from "@/views/BookDetailPage.vue"
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -20,8 +22,8 @@ const router = createRouter({
             children: [
                 {
                     path: "Login",
-                    name: "LoginPageManager",
-                    component: LoginPageManager
+                    name: "LoginManagerPage",
+                    component: LoginManagerPage
                 },
                 {
                     path: "",
@@ -87,6 +89,17 @@ const router = createRouter({
                     name: "HomePage",
                     component: HomePage
                 },
+                {
+                    path: "Discover",
+                    name: "DiscoverBookPage",
+                    component: DiscoverBookPage,
+                    props: true
+                },
+                {
+                    path: "BookDetail/:maSach",
+                    name: "BookDetailPage",
+                    component: BookDetailPage
+                }
 
             ]
         },

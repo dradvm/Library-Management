@@ -3,7 +3,8 @@ import createAxios from "@/utils/axios";
 const axios = createAxios("/Auth")
 
 const authService = {
-    login: (userLogin) => axios.post("/login", userLogin),
+    loginEmployee: (userLogin) => axios.post("/loginEmployee", userLogin),
+    register: (docGia) => axios.post("/register", docGia)
 }
 
 export default authService

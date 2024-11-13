@@ -4,9 +4,9 @@
       <div class="rounded-md bg-white px-4 py-4 grow">
         <div class="flex justify-between">
           <div class="font-medium text-lg">Recommended</div>
-          <div>
+          <RouterLink :to="{ name: 'HomePage' }">
             <MyButton size="small" type="type2">See All</MyButton>
-          </div>
+          </RouterLink>
         </div>
 
         <div v-if="!isLoading" class="mt-3 grid grid-cols-5 gap-x-4 gap-y-5">
@@ -22,7 +22,7 @@
             @click="selectBook(item)"
           >
             <div class="overflow-hidden">
-              <img :src="item.hinhAnh" class="h-44 w-100" />
+              <img :src="item.hinhAnh" class="h-40 w-100" />
             </div>
             <div class="px-2 py-3">
               <div class="font-medium text-sm truncate">
@@ -32,8 +32,29 @@
             </div>
           </div>
         </div>
-        <div v-else class="flex items-center justify-around py-40">
-          <LoadingSpinning></LoadingSpinning>
+        <div v-else class="flex items-center justify-around">
+          <div class="mt-3 grid grid-cols-5 gap-x-4 gap-y-5">
+            <div
+              v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+              class="animate-pulse flex flex-column text-xs cursor-pointer transition shadow rounded-md overflow-hidden"
+            >
+              <div class="overflow-hidden">
+                <div class="h-40 w-100 bg-slate-200"></div>
+              </div>
+              <div class="px-2 py-3">
+                <div
+                  class="font-medium text-sm truncate overflow-hidden rounded"
+                >
+                  <div class="h-2 bg-slate-200 w-64"></div>
+                </div>
+                <div
+                  class="truncate mt-1 text-slate-600 rounded overflow-hidden"
+                >
+                  <div class="h-2 bg-slate-200 w-12 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -71,11 +92,23 @@
                 <div class="ms-1">10</div>
               </div>
             </div>
-            <MyButton size="small" class="mt-4"
-              ><div class="flex items-center">
-                Mượn ngay
-                <font-awesome-icon :icon="['fas', 'book']" class="ms-3" /></div
-            ></MyButton>
+            <RouterLink
+              :to="{
+                name: 'BookDetailPage',
+                params: {
+                  maSach: sachSelected.maSach,
+                },
+              }"
+            >
+              <MyButton size="small" class="mt-4"
+                ><div class="flex items-center">
+                  Mượn ngay
+                  <font-awesome-icon
+                    :icon="['fas', 'book']"
+                    class="ms-3"
+                  /></div
+              ></MyButton>
+            </RouterLink>
           </div>
         </div>
       </div>
@@ -114,6 +147,7 @@ const fetchDataSachs = () => {
 const selectBook = (sach) => {
   sachSelected.value = sach;
 };
+
 onMounted(() => {
   fetchDataSachs();
 });

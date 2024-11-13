@@ -118,7 +118,7 @@ const login = () => {
     return;
   }
   authService
-    .login({
+    .loginEmployee({
       msNV: msNV.value,
       password: password.value,
     })

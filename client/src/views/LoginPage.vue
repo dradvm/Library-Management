@@ -84,7 +84,11 @@
         <div class="flex flex-column justify-around items-center">
           <div class="text-xl font-medium">Chào mừng bạn đăng nhập</div>
           <div class="mt-2 text-sm">Chưa có tài khoản?</div>
-          <RouterLink style="border: 1px solid white" class="rounded-full mt-3">
+          <RouterLink
+            style="border: 1px solid white"
+            class="rounded-full mt-3"
+            :to="{ name: 'RegisterPage' }"
+          >
             <MyButton type="type2" size="small" class="w-32" :is-hover="false"
               ><span class="text-white hover:text-slate-500 text-sm"
                 >Đăng ký ngay!</span

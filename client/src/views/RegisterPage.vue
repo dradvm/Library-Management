@@ -10,7 +10,11 @@
         <div class="flex flex-column justify-around items-center">
           <div class="text-xl font-medium">Chào mừng bạn đăng ký</div>
           <div class="mt-2 text-sm">Đã có tài khoản?</div>
-          <RouterLink style="border: 1px solid white" class="rounded-full mt-3">
+          <RouterLink
+            style="border: 1px solid white"
+            class="rounded-full mt-3"
+            :to="{ name: 'LoginPage' }"
+          >
             <MyButton type="type2" size="small" class="w-36" :is-hover="false"
               ><span class="text-white hover:text-slate-500 text-sm"
                 >Đăng nhập ngay!</span
@@ -28,110 +32,129 @@
             <div
               class="grid grid-cols-3 gap-x-4 mt-3 transition absolute"
               :class="{
-                '-transform-x-2full': check,
+                '-transform-x-2full': isStep2,
               }"
             >
               <div class="col-span-2">
                 <label
                   class="block text-sm font-semibold leading-6 text-gray-900"
+                  for="hoLot"
                   >Họ lót</label
                 >
                 <div class="mt-0.5">
                   <input
-                    v-model="msNV"
-                    id="msnv"
-                    name="msnv"
+                    v-model="docGia.hoLot"
+                    id="hoLot"
+                    name="hoLot"
                     type="text"
                     required="true"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
-                <div class="text-red-500 font-medium text-sm mt-1" v-if="true">
+                <div
+                  class="text-red-500 font-medium text-sm mt-1"
+                  v-if="messageErrorDocGia.hoLot"
+                >
                   <font-awesome-icon
                     :icon="['fas', 'circle-exclamation']"
                     class="me-2"
                   />
-                  <span>{{ "Vui lòng nhập giá trị" }}</span>
+                  <span>{{ messageErrorDocGia.hoLot }}</span>
                 </div>
               </div>
               <div>
                 <label
                   class="block text-sm font-semibold leading-6 text-gray-900"
+                  for="ten"
                   >Tên</label
                 >
                 <div class="mt-0.5">
                   <input
-                    v-model="msNV"
-                    id="msnv"
-                    name="msnv"
+                    v-model="docGia.ten"
+                    id="ten"
+                    name="ten"
                     type="text"
                     required="true"
                     class="block w-full font-medium rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
-                <div class="text-red-500 font-medium text-sm mt-1" v-if="true">
+                <div
+                  class="text-red-500 font-medium text-sm mt-1"
+                  v-if="messageErrorDocGia.ten"
+                >
                   <font-awesome-icon
                     :icon="['fas', 'circle-exclamation']"
                     class="me-2"
                   />
-                  <span>{{ "Vui lòng nhập giá trị" }}</span>
+                  <span>{{ messageErrorDocGia.ten }}</span>
                 </div>
               </div>
               <div>
                 <label
                   class="block text-sm font-semibold leading-6 text-gray-900"
+                  for="ngaySinh"
                   >Ngày sinh</label
                 >
                 <div class="mt-0.5">
                   <input
-                    v-model="msNV"
-                    id="msnv"
-                    name="msnv"
+                    v-model="docGia.ngaySinh"
+                    id="ngaySinh"
+                    name="ngaySinh"
                     type="date"
                     required="true"
+                    :max="getCurrentDate()"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
-                <div class="text-red-500 font-medium text-sm mt-1" v-if="true">
+                <div
+                  class="text-red-500 font-medium text-sm mt-1"
+                  v-if="messageErrorDocGia.ngaySinh"
+                >
                   <font-awesome-icon
                     :icon="['fas', 'circle-exclamation']"
                     class="me-2"
                   />
-                  <span>{{ "A" }}</span>
+                  <span>{{ messageErrorDocGia.ngaySinh }}</span>
                 </div>
               </div>
               <div>
                 <label
                   class="block text-sm font-semibold leading-6 text-gray-900"
+                  for="dienThoai"
                   >Số điện thoại</label
                 >
                 <div class="mt-0.5">
                   <input
-                    v-model="msNV"
-                    id="msnv"
-                    name="msnv"
+                    v-model="docGia.dienThoai"
+                    id="dienThoai"
+                    name="dienThoai"
                     type="text"
                     required="true"
+                    maxlength="10"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
-                <div class="text-red-500 font-medium text-sm mt-1" v-if="true">
+                <div
+                  class="text-red-500 font-medium text-sm mt-1"
+                  v-if="messageErrorDocGia.dienThoai"
+                >
                   <font-awesome-icon
                     :icon="['fas', 'circle-exclamation']"
                     class="me-2"
                   />
-                  <span>{{ "A" }}</span>
+                  <span>{{ messageErrorDocGia.dienThoai }}</span>
                 </div>
               </div>
               <div>
                 <label
                   class="block text-sm font-semibold leading-6 text-gray-900"
+                  for="phai"
                   >Phái</label
                 >
                 <div class="mt-3 flex justify-evenly">
                   <div class="flex items-center">
                     <input
-                      v-model="msNV"
+                      v-model="docGia.phai"
                       id="Male"
                       name="phai"
                       type="radio"
@@ -143,7 +166,7 @@
                   </div>
                   <div class="flex items-center">
                     <input
-                      v-model="msNV"
+                      v-model="docGia.phai"
                       id="Female"
                       name="phai"
                       type="radio"
@@ -158,31 +181,35 @@
               <div class="col-span-3">
                 <label
                   class="block text-sm font-semibold leading-6 text-gray-900"
+                  for="diaChi"
                   >Địa chỉ</label
                 >
                 <div class="mt-0.5">
                   <textarea
-                    v-model="msNV"
-                    id="msnv"
-                    name="msnv"
+                    v-model="docGia.diaChi"
+                    id="diaChi"
+                    name="diaChi"
                     type="text"
                     required="true"
                     class="rounded border w-100 resize-none h-24"
                   ></textarea>
                 </div>
-                <div class="text-red-500 font-medium text-sm mt-1" v-if="true">
+                <div
+                  class="text-red-500 font-medium text-sm mt-1"
+                  v-if="messageErrorDocGia.diaChi"
+                >
                   <font-awesome-icon
                     :icon="['fas', 'circle-exclamation']"
                     class="me-2"
                   />
-                  <span>{{ "A" }}</span>
+                  <span>{{ messageErrorDocGia.diaChi }}</span>
                 </div>
               </div>
             </div>
             <div
               class="absolute transition flex items-center justify-around w-100 h-100"
               :class="{
-                'transform-x-3full': !check,
+                'transform-x-2full': !isStep2,
               }"
             >
               <MyButton
@@ -200,80 +227,83 @@
                 <div class="">
                   <label
                     class="block text-sm font-semibold leading-6 text-gray-900"
+                    for="email"
                     >Email</label
                   >
                   <div class="mt-0.5">
                     <input
-                      v-model="msNV"
-                      id="msnv"
-                      name="msnv"
-                      type="text"
+                      v-model="docGia.email"
+                      id="email"
+                      name="email"
+                      type="email"
                       required="true"
                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
                   <div
                     class="text-red-500 font-medium text-sm mt-1"
-                    v-if="true"
+                    v-if="messageErrorDocGia.email"
                   >
                     <font-awesome-icon
                       :icon="['fas', 'circle-exclamation']"
                       class="me-2"
                     />
-                    <span>{{ "A" }}</span>
+                    <span>{{ messageErrorDocGia.email }}</span>
                   </div>
                 </div>
                 <div class="">
                   <label
                     class="block text-sm font-semibold leading-6 text-gray-900"
+                    for="password"
                     >Mật khẩu</label
                   >
                   <div class="mt-0.5">
                     <input
-                      v-model="msNV"
-                      id="msnv"
-                      name="msnv"
-                      type="text"
+                      v-model="docGia.password"
+                      id="password"
+                      name="password"
+                      type="password"
                       required="true"
                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
                   <div
                     class="text-red-500 font-medium text-sm mt-1"
-                    v-if="true"
+                    v-if="messageErrorDocGia.password"
                   >
                     <font-awesome-icon
                       :icon="['fas', 'circle-exclamation']"
                       class="me-2"
                     />
-                    <span>{{ "A" }}</span>
+                    <span>{{ messageErrorDocGia.password }}</span>
                   </div>
                 </div>
 
                 <div class="">
                   <label
                     class="block text-sm font-semibold leading-6 text-gray-900"
+                    for="confirmPassword"
                     >Xác nhận mật khẩu</label
                   >
                   <div class="mt-0.5">
                     <input
-                      v-model="msNV"
-                      id="msnv"
-                      name="msnv"
-                      type="text"
+                      v-model="confirmPassword"
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type="password"
                       required="true"
                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
                   <div
                     class="text-red-500 font-medium text-sm mt-1"
-                    v-if="true"
+                    v-if="messageErrorDocGia.confirmPassword"
                   >
                     <font-awesome-icon
                       :icon="['fas', 'circle-exclamation']"
                       class="me-2"
                     />
-                    <span>{{ "A" }}</span>
+                    <span>{{ messageErrorDocGia.confirmPassword }}</span>
                   </div>
                 </div>
               </div>
@@ -282,10 +312,17 @@
         </div>
 
         <div class="mt-7">
-          <MyButton size="small" @click="toggle" v-if="!check"
+          <MyButton size="small" @click="changeToStep2" v-if="!isStep2"
             >Tiếp theo</MyButton
           >
-          <MyButton size="small" v-else>Đăng ký</MyButton>
+          <MyButton
+            size="small"
+            v-else
+            @click="submit"
+            :disabled="isDisabled"
+            :is-hover="!isDisabled"
+            >Đăng ký</MyButton
+          >
         </div>
       </div>
     </div>
@@ -295,41 +332,184 @@
 <script setup>
 import MyButton from "@/components/MyButton.vue";
 import authService from "@/services/AuthService";
+import docGiaService from "@/services/DocGiaService";
 import { useAuthStore } from "@/stores/auth";
 import myToast from "@/utils/toast";
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 
-const check = ref(false);
-const hoLot = ref("");
-const messageErrorHoLot = ref("");
-const ten = ref("");
-const messageErrorTen = ref("");
-const phai = ref("");
-const messageErrorPhai = ref("");
-const diaChi = ref("");
-const messageErrorDiaChi = ref("");
-const ngaySinh = ref(null);
-const messageErrorNgaySinh = ref(null);
-const dienThoai = ref("");
-const messageErrorDienThoai = ref("");
-const email = ref("");
-const messageErrorEmail = ref("");
-const password = ref("");
-const messageErrorPassword = ref("");
+const isStep2 = ref(false);
 
-const validate = () => {
-  return true;
+const docGia = ref({
+  hoLot: "",
+  ten: "",
+  phai: "Male",
+  diaChi: "",
+  ngaySinh: "",
+  dienThoai: "",
+  email: "",
+  password: "",
+});
+const messageErrorDocGia = ref({
+  hoLot: null,
+  ten: null,
+  phai: null,
+  diaChi: null,
+  ngaySinh: null,
+  dienThoai: null,
+  email: null,
+  password: null,
+  confirmPassword: null,
+});
+const confirmPassword = ref("");
+const getCurrentDate = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // Tháng cần có 2 chữ số
+  const day = String(today.getDate()).padStart(2, "0"); // Ngày cũng cần có 2 chữ số
+  return `${year}-${month}-${day}`;
+};
+const isDisabled = ref(false);
+const router = useRouter();
+const validateStep1 = () => {
+  var check = true;
+  const soDienThoaiRegex = /^0\d{6,9}$/;
+
+  if (docGia.value.hoLot.trim().length == 0) {
+    messageErrorDocGia.value.hoLot = "Vui lòng nhập giá trị";
+    check = false;
+  }
+  if (docGia.value.ten.trim().length == 0) {
+    messageErrorDocGia.value.ten = "Vui lòng nhập giá trị";
+    check = false;
+  }
+  if (!docGia.value.ngaySinh) {
+    messageErrorDocGia.value.ngaySinh = "Vui lòng chọn giá trị";
+    check = false;
+  }
+  if (docGia.value.dienThoai.trim().length == 0) {
+    messageErrorDocGia.value.dienThoai = "Vui lòng nhập giá trị";
+    check = false;
+  } else if (!soDienThoaiRegex.test(docGia.value.dienThoai)) {
+    messageErrorDocGia.value.dienThoai = "SĐT không hợp lệ";
+    check = false;
+  }
+
+  if (docGia.value.diaChi.trim().length == 0) {
+    messageErrorDocGia.value.diaChi = "Vui lòng nhập giá trị";
+    check = false;
+  }
+  return check;
 };
 
+const validateStep2 = () => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  var check = true;
+  if (docGia.value.email.trim().length == 0) {
+    messageErrorDocGia.value.email = "Vui lòng nhập email";
+    check = false;
+  } else if (!emailRegex.test(docGia.value.email)) {
+    messageErrorDocGia.value.email = "Email không hợp lệ";
+    check = false;
+  }
+  if (docGia.value.password.length == 0) {
+    messageErrorDocGia.value.password = "Vui lòng nhập mật khẩu";
+    check = false;
+  } else if (docGia.value.password.length < 6) {
+    messageErrorDocGia.value.password = "Mật khẩu tối thiểu 6 kí tự";
+    check = false;
+  }
+  if (docGia.value.password != confirmPassword.value) {
+    messageErrorDocGia.value.confirmPassword = "Mật khẩu không khớp";
+    check = false;
+  }
+  return check;
+};
+
+watch(
+  () => docGia.value.hoLot,
+  () => {
+    messageErrorDocGia.value.hoLot = null;
+  }
+);
+watch(
+  () => docGia.value.ten,
+  () => {
+    messageErrorDocGia.value.ten = null;
+  }
+);
+watch(
+  () => docGia.value.ngaySinh,
+  () => {
+    messageErrorDocGia.value.ngaySinh = null;
+  }
+);
+watch(
+  () => docGia.value.dienThoai,
+  () => {
+    messageErrorDocGia.value.dienThoai = null;
+  }
+);
+watch(
+  () => docGia.value.diaChi,
+  () => {
+    messageErrorDocGia.value.diaChi = null;
+  }
+);
+watch(
+  () => docGia.value.email,
+  () => {
+    messageErrorDocGia.value.email = null;
+  }
+);
+watch(
+  () => docGia.value.password,
+  () => {
+    messageErrorDocGia.value.password = null;
+  }
+);
+watch(confirmPassword, () => {
+  messageErrorDocGia.value.confirmPassword = null;
+});
+
 const toggle = () => {
-  check.value = !check.value;
+  isStep2.value = !isStep2.value;
+};
+
+const changeToStep2 = () => {
+  if (validateStep1()) {
+    toggle();
+  }
+};
+
+const submit = () => {
+  if (validateStep1() && !isDisabled.value) {
+    if (validateStep2() && !isDisabled.value) {
+      isDisabled.value = true;
+      authService
+        .register(docGia.value)
+        .then((res) => {
+          if (res.status == 409) {
+            messageErrorDocGia.value.email = res.data.message;
+            isDisabled.value = false;
+          } else {
+            myToast(res.data.message, "success", 1000, () => {
+              router.push({ name: "HomePage" });
+            });
+          }
+        })
+        .catch((err) => myToast(err.message));
+    }
+  } else {
+    isStep2.value = false;
+    isDisabled.value = false;
+  }
 };
 </script>
 
 <style scoped>
-.transform-x-3full {
-  transform: translateX(300%);
+.transform-x-2full {
+  transform: translateX(200%);
 }
 .-transform-x-2full {
   transform: translateX(-200%);
