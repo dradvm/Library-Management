@@ -23,9 +23,9 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
-    build: {
-      outDir: '../server/public',
-      emptyOutDir: true,
-    },
+  },
+  build: {
+    outDir: '../server/public',
+    emptyOutDir: true,
   },
 })
