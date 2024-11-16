@@ -37,7 +37,7 @@
             >
               {{
                 item.trangThai == "Out Dated"
-                  ? "Quá ngày mượn"
+                  ? "Quá ngày trả"
                   : item.trangThai == "Book Returned"
                   ? "Đã trả"
                   : "Đang mượn"
