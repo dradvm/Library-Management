@@ -26,7 +26,26 @@
           </div>
         </div>
         <div>
-          <MyButton size="small">Thêm để đọc</MyButton>
+          <RouterLink
+            :to="{
+              name: 'LoginPage',
+            }"
+            v-if="!authStore.isLogined()"
+          >
+            <MyButton size="small">"Thêm để đọc"</MyButton>
+          </RouterLink>
+          <MyButton
+            size="small"
+            @click="authStore.addBookCart(sach)"
+            :disabled="authStore.isExistBook(sach)"
+            :is-hover="!authStore.isExistBook(sach)"
+            v-else
+            >{{
+              authStore.isExistBook(sach)
+                ? "Đã thêm vào giỏ sách"
+                : "Thêm để đọc"
+            }}</MyButton
+          >
         </div>
       </div>
     </div>
@@ -36,11 +55,13 @@
 <script setup>
 import MyButton from "@/components/MyButton.vue";
 import sachService from "@/services/SachService";
+import { useAuthStore } from "@/stores/auth";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const sach = ref({ maNXB: "" });
+const authStore = useAuthStore();
 
 const fetchDataSach = () => {
   sachService

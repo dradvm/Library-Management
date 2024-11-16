@@ -7,12 +7,26 @@ const getTokenFormReq = (req) => {
     }
     return null
 }
-const generateDataUser = (data) => {
-    return {
-        id: data.id || data._id,
-        msNV: data.msNV,
-        chucVu: data.chucVu
+const generateDataUser = (data, isManager) => {
+    var user
+    if (isManager) {
+        user = {
+            id: data.id || data._id,
+            msNV: data.msNV,
+            chucVu: data.chucVu,
+            isManager: isManager
+        }
     }
+    else {
+        user = {
+            id: data.id || data._id,
+            maDocGia: data.maDocGia,
+            ten: data.ten,
+            isManager: isManager
+        }
+    }
+
+    return user
 }
 
 const generateAccessToken = (user) => {

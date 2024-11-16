@@ -86,7 +86,11 @@
                 },
               }"
             >
-              <MyButton size="small" type="success">
+              <MyButton
+                size="small"
+                type="success"
+                v-if="item.chucVu != 'ADMIN'"
+              >
                 <font-awesome-icon :icon="['fas', 'pen-to-square']" />
               </MyButton>
             </RouterLink>

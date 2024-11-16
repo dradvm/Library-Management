@@ -1,6 +1,10 @@
 const mongoose = require("mongoose")
 
 const theoDoiMuonSach = new mongoose.Schema({
+    maTheoDoiMuonSach: {
+        type: String,
+        require: true
+    },
     maDocGia: {
         type: mongoose.Schema.ObjectId,
         ref: "DocGia",
@@ -9,7 +13,6 @@ const theoDoiMuonSach = new mongoose.Schema({
     msNV: {
         type: mongoose.Schema.ObjectId,
         ref: "NhanVien",
-        require: true
     },
     ngayMuon: {
         type: Date,
@@ -18,6 +21,15 @@ const theoDoiMuonSach = new mongoose.Schema({
     },
     ngayTra: {
         type: Date,
+        require: true
+    },
+    maSach: {
+        type: mongoose.Schema.ObjectId,
+        require: true,
+        ref: "Sach"
+    },
+    trangThai: {
+        type: String,
         require: true
     }
 })

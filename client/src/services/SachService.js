@@ -15,6 +15,7 @@ const sachService = {
     deleteSach: (id) => axios.delete(`/delete/${id}`),
     getNewMaSach: () => axios.get("/newMaSach"),
     getSachByMaSach: (maSach) => axios.get(`/searchByMaSach/${maSach}`),
+    getSachById: (id) => axios.get(`/searchById/${id}`),
 }
 
 export default sachService

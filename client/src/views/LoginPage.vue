@@ -123,7 +123,7 @@ watch(password, (oldValue, newValue) => {
 });
 const validEmail = () => {
   if (email.value.length == 0) {
-    messageErrorEmail.value = "Vui lòng nhập mã số nhân viên";
+    messageErrorEmail.value = "Vui lòng nhập email";
     return false;
   } else if (email.value.trim().length == 0) {
     messageErrorEmail.value = "Vui lòng không nhập các kí tự trắng";
@@ -155,17 +155,16 @@ const login = () => {
       password: password.value,
     })
     .then((res) => {
-      console.log(res);
       if (res.status === 401) {
         messageErrorPassword.value = res.data.message;
       } else {
+        localStorage.setItem("accessToken", res.data);
         authStore.login(res.data).then((res) => {
-          router.push({ name: "BookPage" });
+          router.push({ name: "HomePage" });
         });
       }
     })
     .catch((err) => {
-      console.log(err);
       myToast(err);
     });
 };

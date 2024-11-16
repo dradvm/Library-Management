@@ -29,7 +29,7 @@ const AuthController = {
             .then((userData) => {
                 if (userData) {
                     return nhanVienModel.findByIdAndUpdate(userData._id, {
-                        refreshToken: generateRefreshToken(generateDataUser(userData))
+                        refreshToken: generateRefreshToken(generateDataUser(userData, true))
                     }, { new: true })
                 }
                 else {
@@ -44,7 +44,51 @@ const AuthController = {
                         sameSite: 'Strict',
                         maxAge: 24 * 60 * 60 * 1000
                     });
-                    return res.status(200).json(generateAccessToken(generateDataUser(userData)))
+                    return res.status(200).json(generateAccessToken(generateDataUser(userData, true)))
+                }
+            })
+            .catch((err) => res.status(500).json({ message: err.message }))
+    },
+    login: async (req, res) => {
+        const userLogin = req.body
+        docGiaModel.findOne({
+            email: userLogin.email
+        })
+            .then((data) => {
+                if (!data) {
+                    res.status(401).json({ message: "Email chưa được đăng ký" })
+                    return null
+                }
+                return bcrypt.compare(userLogin.password, data.password).then((check) => {
+                    if (check) {
+                        return data
+                    }
+                    else {
+                        res.status(401).json({ message: "Email hoặc mật khẩu không đúng" })
+                        return null
+                    }
+                })
+            })
+
+            .then((userData) => {
+                if (userData) {
+                    return docGiaModel.findByIdAndUpdate(userData._id, {
+                        refreshToken: generateRefreshToken(generateDataUser(userData, false))
+                    }, { new: true })
+                }
+                else {
+                    return null
+                }
+
+            })
+            .then((userData) => {
+                if (userData) {
+                    res.cookie('refreshToken', userData.refreshToken, {
+                        httpOnly: true,
+                        sameSite: 'Strict',
+                        maxAge: 24 * 60 * 60 * 1000
+                    });
+                    return res.status(200).json(generateAccessToken(generateDataUser(userData, false)))
                 }
             })
             .catch((err) => res.status(500).json({ message: err.message }))

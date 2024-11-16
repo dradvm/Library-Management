@@ -11,12 +11,6 @@
       </RouterLink>
       <div class="flex flex-column mt-8">
         <RouterLink
-          to=""
-          class="transition cursor-pointer mt-1 hover:bg-slate-800 px-4 py-3 rounded"
-        >
-          <font-awesome-icon :icon="['fas', 'user']" class="text-lg" />
-        </RouterLink>
-        <RouterLink
           :to="{
             name: 'BookPage',
           }"
@@ -36,6 +30,7 @@
           :to="{
             name: 'EmployeePage',
           }"
+          v-if="authStore.$state.user.chucVu == 'ADMIN'"
           class="transition cursor-pointer mt-1 px-4 py-3 rounded"
           :class="{
             'hover:bg-slate-800': !['EmployeePage'].includes(route.name),
@@ -54,7 +49,7 @@
           }"
           class="transition cursor-pointer mt-1 hover:bg-slate-800 px-4 py-3 rounded"
           :class="{
-            'hover:bg-slate-800': !['EmployeePage'].includes(route.name),
+            'hover:bg-slate-800': !['PublisherPage'].includes(route.name),
             'bg-slate-700': [
               'PublisherPage',
               'AddPublisherPage',
@@ -65,10 +60,28 @@
           <font-awesome-icon :icon="['fas', 'address-book']" class="text-lg" />
         </RouterLink>
         <RouterLink
-          to=""
+          :to="{
+            name: 'OrderPage',
+          }"
           class="transition cursor-pointer mt-1 hover:bg-slate-800 px-4 py-3 rounded"
+          :class="{
+            'hover:bg-slate-800': !['OrderPage'].includes(route.name),
+            'bg-slate-700': ['OrderPage'].includes(route.name),
+          }"
         >
-          <font-awesome-icon :icon="['fas', 'chart-simple']" class="text-lg" />
+          <font-awesome-icon :icon="['fas', 'folder-open']" class="text-lg" />
+        </RouterLink>
+        <RouterLink
+          :to="{
+            name: 'ConfirmOrderPage',
+          }"
+          class="transition cursor-pointer mt-1 hover:bg-slate-800 px-4 py-3 rounded"
+          :class="{
+            'hover:bg-slate-800': !['ConfirmOrderPage'].includes(route.name),
+            'bg-slate-700': ['ConfirmOrderPage'].includes(route.name),
+          }"
+        >
+          <font-awesome-icon :icon="['far', 'folder-open']" class="text-lg" />
         </RouterLink>
         <RouterLink
           to=""
@@ -98,6 +111,6 @@ const authStore = useAuthStore();
 
 const logout = () => {
   authStore.logout();
-  router.push({ name: "LoginPage" });
+  router.push({ name: "LoginManagerPage" });
 };
 </script>

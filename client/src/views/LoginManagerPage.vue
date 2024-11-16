@@ -127,13 +127,13 @@ const login = () => {
       if (res.status === 401) {
         messageErrorPassword.value = res.data.message;
       } else {
+        localStorage.setItem("accessToken", res.data);
         authStore.login(res.data).then((res) => {
           router.push({ name: "BookPage" });
         });
       }
     })
     .catch((err) => {
-      console.log(err);
       myToast(err);
     });
 };

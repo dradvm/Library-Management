@@ -6,6 +6,7 @@ const randomstring = require("randomstring")
 
 const sachController = {
     getAllSach: async (req, res) => {
+
         sachModel.find({})
             .then((data) => getNewUrlSignForAll(data, sachModel))
             .populate({
@@ -47,8 +48,12 @@ const sachController = {
     },
     getSachById: async (req, res) => {
         sachModel.findById(req.params.id)
+            .then((data) => getNewUrlSignForAll([data], sachModel))
+            .then((data) => sachModel.findById(req.params.id))
             .then((data) => res.status(200).json(data))
-            .catch((err) => res.status(500).json({ message: err.message }))
+            .catch((err) => {
+                res.status(500).json({ message: err.message })
+            })
     },
     getSachByMaSach: async (req, res) => {
         sachModel.findOne({

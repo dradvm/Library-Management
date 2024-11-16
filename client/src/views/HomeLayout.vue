@@ -1,6 +1,6 @@
 <template>
   <div class="fixed flex h-100 w-100" @click="toggleSearchBox(false)">
-    <div class="flex flex-column px-8 py-6 w-60 border">
+    <div class="flex flex-column px-8 py-6 border">
       <RouterLink :to="{ name: 'HomePage' }" class="flex items-center">
         <font-awesome-icon
           :icon="['fas', 'book-open']"
@@ -63,7 +63,71 @@
             >Discover</span
           >
         </RouterLink>
-        <hr class="my-3" />
+        <RouterLink
+          :to="{ name: 'CartBookPage' }"
+          class="my-2 flex items-center group"
+          v-if="authStore.isLogined()"
+        >
+          <font-awesome-icon
+            :icon="['fas', 'cart-shopping']"
+            class="w-4 h-4 transition cursor-pointer text-lg px-2 py-2 rounded"
+            :class="{
+              'bg-blue-600 text-white': ['CartBookPage'].includes(route.name),
+              'group-hover:bg-slate-200 bg-slate-100 text-slate-400': ![
+                'CartBookPage',
+              ].includes(route.name),
+            }"
+          />
+          <span
+            class="ms-4"
+            :class="{
+              'font-medium': ['CartBookPage'].includes(route.name),
+              'group-hover:font-medium': !['CartBookPage'].includes(route.name),
+            }"
+            >Cart</span
+          >
+        </RouterLink>
+        <RouterLink
+          :to="{ name: 'HistoryOrderPage' }"
+          class="my-2 flex items-center group"
+          v-if="authStore.isLogined()"
+        >
+          <font-awesome-icon
+            :icon="['fas', 'clock-rotate-left']"
+            class="w-4 h-4 transition cursor-pointer text-lg px-2 py-2 rounded"
+            :class="{
+              'bg-blue-600 text-white': ['HistoryOrderPage'].includes(
+                route.name
+              ),
+              'group-hover:bg-slate-200 bg-slate-100 text-slate-400': ![
+                'HistoryOrderPage',
+              ].includes(route.name),
+            }"
+          />
+          <span
+            class="ms-4"
+            :class="{
+              'font-medium': ['HistoryOrderPage'].includes(route.name),
+              'group-hover:font-medium': !['HistoryOrderPage'].includes(
+                route.name
+              ),
+            }"
+            >History</span
+          >
+        </RouterLink>
+        <hr class="my-3" v-if="authStore.isLogined()" />
+        <RouterLink
+          :to="{ name: 'HomePage' }"
+          class="my-2 flex items-center group"
+          v-if="authStore.isLogined()"
+          @click="logout"
+        >
+          <font-awesome-icon
+            :icon="['fas', 'right-from-bracket']"
+            class="w-4 h-4 transition cursor-pointer text-lg px-2 py-2 rounded group-hover:bg-slate-200 bg-slate-100 text-slate-400"
+          />
+          <span class="ms-4 group-hover:font-medium">Logout</span>
+        </RouterLink>
       </div>
     </div>
     <div class="grow h-100">
@@ -136,7 +200,7 @@
             </div>
           </div>
         </div>
-        <div class="flex">
+        <div class="flex" v-if="!authStore.isLogined()">
           <RouterLink
             :to="{
               name: 'LoginPage',
@@ -156,6 +220,16 @@
             >
           </RouterLink>
         </div>
+        <div v-else class="flex space-x-3 items-center">
+          <div class="font-medium text-indigo-600">
+            {{ authStore.getTen() }}
+          </div>
+          <div
+            class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-around"
+          >
+            <font-awesome-icon :icon="['fas', 'user']" class="text-gray-600" />
+          </div>
+        </div>
       </div>
       <RouterView
         class="grow"
@@ -174,6 +248,8 @@ import { onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import sachService from "@/services/SachService";
 import debounce from "@/utils/debounce";
+import { useAuthStore } from "@/stores/auth";
+const authStore = useAuthStore();
 const search = ref("");
 const searchValue = ref("");
 const route = useRoute();
@@ -183,6 +259,10 @@ const sachs = ref([]);
 const isLoading = ref(false);
 const resetSearch = () => {
   search.value = "";
+};
+const logout = () => {
+  authStore.logout();
+  router.push({ name: "LoginPage" });
 };
 const toggleSearchBox = (value) => {
   isOpenSearchBox.value = value;

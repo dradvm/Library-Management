@@ -39,7 +39,11 @@ const docGiaSchema = new mongoose.Schema({
     password: {
         type: String,
         require: true
-    }
+    },
+    refreshToken: {
+        type: String,
+        default: null
+    },
 })
 
 docGiaSchema.pre("save", async function (next) {

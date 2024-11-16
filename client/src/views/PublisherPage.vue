@@ -58,11 +58,7 @@
           </div>
           <div class="flex justify-evenly" style="width: 10%">
             <RouterLink>
-              <MyButton
-                size="small"
-                type="success"
-                @click="fetchDataNhaXuatBan(item._id)"
-              >
+              <MyButton size="small" @click="fetchDataNhaXuatBan(item._id)">
                 <font-awesome-icon :icon="['fas', 'pen-to-square']" />
               </MyButton>
             </RouterLink>
@@ -106,7 +102,7 @@
         ></textarea>
       </div>
     </div>
-    <div class="mt-6 flex justify-evenly">
+    <div class="mt-6 flex justify-evenly space-x-3">
       <MyButton
         size="small"
         class="w-28"

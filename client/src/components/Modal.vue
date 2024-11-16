@@ -6,7 +6,7 @@
     <div class="fixed inset-0 bg-black opacity-50" @click="handleClose"></div>
     <div
       class="border bg-white rounded-lg px-16 py-8 flex flex-col z-10"
-      style="width: 500px"
+      style="width: 600px"
     >
       <slot></slot>
     </div>

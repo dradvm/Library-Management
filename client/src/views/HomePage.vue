@@ -4,7 +4,7 @@
       <div class="rounded-md bg-white px-4 py-4 grow">
         <div class="flex justify-between">
           <div class="font-medium text-lg">Recommended</div>
-          <RouterLink :to="{ name: 'HomePage' }">
+          <RouterLink :to="{ name: 'DiscoverBookPage' }">
             <MyButton size="small" type="type2">See All</MyButton>
           </RouterLink>
         </div>

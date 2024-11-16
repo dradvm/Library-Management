@@ -25,7 +25,7 @@
         'text-indigo-600 hover:text-indigo-800': type == 'type2',
         'hover:-translate-y-0 bg-indigo-400': disabled,
         'bg-indigo-600 hover:bg-indigo-500':
-          !disabled && !['type2', 'type3'].includes(type),
+          !disabled && !['type2', 'type3', 'success'].includes(type),
         'hover:-translate-y-0.5': isHover,
       }"
       :disabled="disabled"

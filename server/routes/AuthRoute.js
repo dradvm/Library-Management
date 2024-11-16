@@ -5,6 +5,7 @@ const authController = require("../controllers/AuthController")
 
 
 router.post("/loginEmployee", authController.loginEmployee)
+router.post("/login", authController.login)
 router.post("/register", authController.register)
 
 

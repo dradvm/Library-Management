@@ -9,6 +9,7 @@ const nhanVienRoute = require("./routes/NhanVienRoute")
 const nhaXuatBanRoute = require("./routes/NhaXuatBanRoute")
 const theoDoiMuonSachRoute = require("./routes/TheoDoiMuonSachRoute")
 const authRoute = require("./routes/AuthRoute")
+const schedule = require("./utils/nodecron")
 const authMiddleware = require("./middlewares/authMiddleware")
 require("dotenv").config()
 
@@ -31,6 +32,7 @@ router.use("/TheoDoiMuonSach", theoDoiMuonSachRoute)
 
 
 connection()
+schedule.start()
 app.use(cors())
     .use(express.json())
     .use(cookieParser())
