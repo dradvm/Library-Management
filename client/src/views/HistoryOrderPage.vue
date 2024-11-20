@@ -146,7 +146,6 @@ const fetchDataTheoDoiMuonSachs = () => {
     })
     .then((res) => {
       theoDoiMuonSachs.value = res.data;
-      console.log(theoDoiMuonSachs.value);
       isLoading.value = false;
     })
     .catch((err) => {
@@ -190,7 +189,6 @@ const toggleModal = (action, sachs = []) => {
   isVisibleModal.value = action;
   if (action && sachs.length > 0) {
     fetchDataSachs(sachs);
-    console.log(sachsDetail.value);
   } else {
     sachsDetail.value = [];
   }

@@ -43,6 +43,7 @@ const createAxios = (route = "", contentType = 'application/json') => {
     }, (err) => {
         if (err.response.status >= 400 && err.response.status < 500) {
             if (err.response && err.response.status === 440) {
+                localStorage.removeItem("accessToken")
                 router.push({ name: "" })
                 return
             }
